@@ -116,3 +116,7 @@ tmp/
 temp/
 
 # End of https://www.gitignore.io/api/node,code
+
+
+#Env variables
+env.json
