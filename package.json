@@ -1,0 +1,25 @@
+{
+  "name": "pi-1920v-li51n-g08",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cota-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpmatos/PI-1920v-LI51N-G08.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpmatos/PI-1920v-LI51N-G08/issues"
+  },
+  "homepage": "https://github.com/jpmatos/PI-1920v-LI51N-G08#readme",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "mocha": "^7.1.1",
+    "request": "^2.88.2"
+  }
+}
