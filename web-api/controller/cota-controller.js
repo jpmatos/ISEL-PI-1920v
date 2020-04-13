@@ -2,12 +2,12 @@
 
 module.exports = class cotaController {
     
-    constructor(cota){
-        this.cota = cota
+    constructor(cotaService){
+        this.cotaService = cotaService
     }
 
-    static init (cota){
-        return new cotaController(cota)
+    static init (cotaService){
+        return new cotaController(cotaService)
     }
 
     home(req, res){
@@ -18,8 +18,15 @@ module.exports = class cotaController {
     }
 
     popular(req, res){
-        this.cota.getPopular((err, movies) => {
+        this.cotaService.getPopular((err, movies) => {
             this.constructor.buildResponse(res, err, movies)
+        })
+    }
+
+    searchSerie(req, res){
+        let serie = req.query.query
+        this.cotaService.searchSerie(serie, (err, serie) =>{
+            this.constructor.buildResponse(res, err, serie)
         })
     }
 

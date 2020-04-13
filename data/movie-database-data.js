@@ -13,18 +13,22 @@ module.exports = class movieData {
     }
 
     getPopularMovies(cb){
-        this.makeRequest('GET', '/popular', null, cb)
+        this.makeRequest('GET', '/movie/popular', null, cb)
+    }
+
+    getSerieShow(serie, cb){
+        this.makeRequest('GET', '/search/tv', `query=${serie}&`, cb)
     }
 
     makeRequest(method, uri, queryParams, callback) {
         this.request({
             'method': method,
-            'uri': this.baseURL + uri + "?api_key=" + this.token,
+            'uri': this.baseURL + uri + "?" + queryParams + "api_key=" + this.token,
             'json': true,
             // 'headers': {
             //     'X-Auth-Token': this.token
             // },
-            'qs': queryParams
+            // 'qs': queryParams
         }, (err, res, body) => {
             if(err || res.statusCode != 200) 
                 return callback(err || body)
