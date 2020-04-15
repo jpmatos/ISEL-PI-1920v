@@ -17,4 +17,13 @@ module.exports = class cotaDB{
         this.documents.push(document)
         cb(null, document)
     }
+
+    update(id, document, cb) {
+        let found = this.documents.find(item => item['_id'] == parseInt(id))
+        if(document.name)
+            found.name = document.name
+        if(document.description)
+            found.description = document.description
+        cb(null, found)
+    }
 } 

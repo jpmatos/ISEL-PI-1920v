@@ -72,6 +72,53 @@
 				"description": "Creates a group"
 			},
 			"response": []
+		},
+		{
+			"name": "UpdateGroup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fd902f12-07d4-4c26-8974-f6a99d82df34",
+						"exec": [
+							"pm.test('Should return edited group.', function(){",
+							"    const res = pm.response.json();",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res._id).to.eql(environment.groupID);",
+							"    pm.expect(res.name).to.eql(req.name)",
+							"    pm.expect(res.description).to.eql(req.description)",
+							"    pm.expect(res).to.have.a.property('teams')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"NameEdited\",\n\t\"description\": \"DescriptionEdited\"\n}"
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/groups/{{groupID}}",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"groups",
+						"{{groupID}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -98,7 +145,7 @@
 	],
 	"variable": [
 		{
-			"id": "9d11377c-8f23-4749-ba00-34266c49fced",
+			"id": "79cb879d-f4b8-40fd-b513-2704f7afc3d7",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"

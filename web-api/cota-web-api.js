@@ -7,6 +7,7 @@ module.exports = (router, cotaController, groupController) => {
     router.get('/search/tv', (req, res) => cotaController.searchSerie(req, res))
 
     router.post('/groups', (req, res) => groupController.create(req, res))
+    router.put('/groups/:groupID', (req, res) => groupController.edit(req, res))
     
     return router
 }

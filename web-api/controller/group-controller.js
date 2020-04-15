@@ -2,17 +2,23 @@
 
 module.exports = class groupController{
 
-    constructor(cotaService){
-        this.cotaService = cotaService
+    constructor(service){
+        this.service = service
     }
 
-    static init(cotaService){
-        return new groupController(cotaService)
+    static init(service){
+        return new groupController(service)
     }
 
     create(req, res){
-        this.cotaService.createGroup(req.body.name, req.body.description, (err, groupData) => {
+        this.service.createGroup(req.body.name, req.body.description, (err, groupData) => {
             this.constructor.buildResponse(res, err, groupData, 201)
+        })
+    }
+
+    edit(req, res) {
+        this.service.editGroup(req.params.groupID, req.body.name, req.body.description, (err, groupData) => {
+            this.constructor.buildResponse(res, err, groupData)
         })
     }
 
