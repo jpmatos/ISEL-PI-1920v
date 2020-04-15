@@ -6,7 +6,7 @@ module.exports = class cotaController {
         this.cotaService = cotaService
     }
 
-    static init (cotaService){
+    static init(cotaService){
         return new cotaController(cotaService)
     }
 

@@ -2,12 +2,13 @@
 
 module.exports = class cotaServices {
 
-    constructor(movieAPI){
+    constructor(movieAPI, db){
         this.movieAPI = movieAPI
+        this.db = db
     }
 
-    static init (movieAPI){
-        return new cotaServices(movieAPI)
+    static init (movieAPI, db){
+        return new cotaServices(movieAPI, db)
     }
 
     getPopular(cb){
@@ -36,6 +37,16 @@ module.exports = class cotaServices {
                 })
             })
             cb(null, series)
+        })
+    }
+
+    createGroup(name, desc, cb){
+        const group = {'name': name, 'description': desc, 'series': []}
+        this.db.create(group, (err, data) => {
+            if(err) return cb(err)
+
+            group['_id'] = data._id
+            cb(null, group)
         })
     }
 }

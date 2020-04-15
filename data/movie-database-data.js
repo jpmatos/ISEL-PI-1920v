@@ -21,6 +21,8 @@ module.exports = class movieData {
     }
 
     makeRequest(method, uri, queryParams, callback) {
+        if(queryParams == null || queryParams == undefined)
+            queryParams = ""
         this.request({
             'method': method,
             'uri': this.baseURL + uri + "?" + queryParams + "api_key=" + this.token,
