@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "cd9a5d2a-15c3-4a1f-8650-9dc651ab381f",
+		"name": "CotaCollection",
+		"description": "Collection of API calls for COTA (Chelas Open TV Application).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetPopular",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/popular",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"popular"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateGroup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1650e6c-3123-4586-b8e5-f767e977585c",
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"groupID\", jsonData._id)",
+							"",
+							"pm.test('Should return inserted group.', function(){",
+							"    const res = pm.response.json();",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res._id).to.be.a('string');",
+							"    pm.expect(res.name).to.eql(req.name)",
+							"    pm.expect(res.description).to.eql(req.description)",
+							"    pm.expect(res).to.have.a.property('series')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/groups",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"groups"
+					]
+				},
+				"description": "Creates a group"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "6a170de1-cfc4-4f49-b49d-aafbd06b1eb3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "51fa5c7b-f1cf-4286-b698-3b3ebbfeea10",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "4f50ceeb-1ae5-4fc7-987a-601d940c00a2",
+			"key": "BASE_URL",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
