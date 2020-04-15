@@ -37,7 +37,7 @@
 							"pm.test('Should return inserted group.', function(){",
 							"    const res = pm.response.json();",
 							"    const req = JSON.parse(request.data)",
-							"    pm.expect(res._id).to.be.a('string');",
+							"    pm.expect(res._id).to.be.a('number');",
 							"    pm.expect(res.name).to.eql(req.name)",
 							"    pm.expect(res.description).to.eql(req.description)",
 							"    pm.expect(res).to.have.a.property('series')",
@@ -98,7 +98,7 @@
 	],
 	"variable": [
 		{
-			"id": "4f50ceeb-1ae5-4fc7-987a-601d940c00a2",
+			"id": "9d11377c-8f23-4749-ba00-34266c49fced",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"
