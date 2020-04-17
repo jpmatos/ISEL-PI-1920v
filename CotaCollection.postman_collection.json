@@ -108,10 +108,10 @@
 							"pm.test('Should return edited group.', function(){",
 							"    const res = pm.response.json();",
 							"    const req = JSON.parse(request.data)",
-							"    pm.expect(res._id).to.eql(environment.groupID);",
+							"    pm.expect(res._id).to.eql(parseInt(environment.groupID));",
 							"    pm.expect(res.name).to.eql(req.name)",
 							"    pm.expect(res.description).to.eql(req.description)",
-							"    pm.expect(res).to.have.a.property('teams')",
+							"    pm.expect(res).to.have.a.property('series')",
 							"});"
 						],
 						"type": "text/javascript"
@@ -129,16 +129,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"NameEdited\",\n\t\"description\": \"DescriptionEdited\"\n}"
+					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"name\": \"NameEdited\",\n\t\"description\": \"DescriptionEdited\"\n}"
 				},
 				"url": {
-					"raw": "{{BASE_URL}}/groups/{{groupID}}",
+					"raw": "{{BASE_URL}}/groups",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
-						"groups",
-						"{{groupID}}"
+						"groups"
 					]
 				}
 			},
@@ -219,24 +218,46 @@
 		},
 		{
 			"name": "AddSerieToGroup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody)",
+							"",
+							"pm.test('Should return group with team added.', function() {",
+							"    const res = pm.response.json();",
+							"    const serie = res.series[res.series.length-1]",
+							"    pm.expect(serie.name).to.be.a('string')",
+							"    pm.expect(serie.id).to.be.a('number')",
+							"    pm.expect(serie.popularity).to.be.a('number')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": \"Lost\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "{{BASE_URL}}/groups/{{groupID}}/series?query=Lost",
+					"raw": "{{BASE_URL}}/groups/series",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
 						"groups",
-						"{{groupID}}",
 						"series"
-					],
-					"query": [
-						{
-							"key": "query",
-							"value": "Lost"
-						}
 					]
 				}
 			},
@@ -267,7 +288,7 @@
 	],
 	"variable": [
 		{
-			"id": "d88d27f6-3c9d-4fec-8827-6e353f93ed96",
+			"id": "60b3da02-54b2-4056-b712-93eaeba17128",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"

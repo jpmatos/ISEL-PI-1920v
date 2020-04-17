@@ -17,7 +17,7 @@ module.exports = class groupController{
     }
 
     edit(req, res) {
-        this.service.editGroup(req.params.groupID, req.body.name, req.body.description, (err, groupData) => {
+        this.service.editGroup(req.body.groupID, req.body.name, req.body.description, (err, groupData) => {
             this.constructor.buildResponse(err, groupData, res)
         })
     }
@@ -35,7 +35,7 @@ module.exports = class groupController{
     }
 
     addSerie(req, res){
-        this.service.addSerieToGroup(req.params.groupID, req.query.query, (err, group) => {
+        this.service.addSerieToGroup(req.body.groupID, req.body.serie, (err, group) => {
             this.constructor.buildResponse(err, group, res)
         })
     }
