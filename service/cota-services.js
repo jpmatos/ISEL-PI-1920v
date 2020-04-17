@@ -49,10 +49,11 @@ module.exports = class cotaServices {
             return cb(null, {'message': 'Must provide name and description with no special chars'})
 
         const group = {'name': name, 'description': desc, 'series': []}
-        this.db.create(group, (err, data) => {
+
+        this.db.create(group, (err, groupData) => {
             if(err) 
                 return cb(err)
-            group['_id'] = data._id
+            group._id = groupData._id
             cb(null, group)
         })
     }
@@ -69,9 +70,35 @@ module.exports = class cotaServices {
             updatedGroup.name = name
         if(desc) 
             updatedGroup.description = desc
+
         this.db.update(id, updatedGroup, (err, groupData) => {
             if(err) 
                 return cb(err)            
+            cb(null, groupData)
+        })
+    }
+
+    getAllGroups(cb){
+        const groups = []
+        this.db.getAll((err, groupData) => {
+            if(err)
+                return cb(err)
+            groupData.forEach(group => {
+                groups.push({
+                    '_id': group._id,
+                    'name': group.name,
+                    'description': group.description,
+                    'series': group.series.length
+                })
+            })
+            cb(null, groups)
+        })
+    }
+
+    getGroup(groupID, cb){
+        this.db.findByID(groupID, (err, groupData) => {
+            if(err)
+                return cb(err)
             cb(null, groupData)
         })
     }

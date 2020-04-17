@@ -12,18 +12,27 @@ module.exports = class cotaDB{
     }
 
     create(document, cb){
-        document['_id'] = this.id
+        document._id = this.id
         this.id += 1
         this.documents.push(document)
         cb(null, document)
     }
 
     update(id, document, cb) {
-        let found = this.documents.find(item => item['_id'] == parseInt(id))
+        let found = this.documents.find(item => item._id == parseInt(id))
         if(document.name)
             found.name = document.name
         if(document.description)
             found.description = document.description
+        cb(null, found)
+    }
+
+    getAll(cb){
+        cb(null, this.documents)
+    }
+
+    findByID(id, cb){
+        let found = this.documents.find(item => item._id == parseInt(id))
         cb(null, found)
     }
 } 
