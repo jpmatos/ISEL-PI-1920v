@@ -31,15 +31,18 @@ module.exports = class cotaServices {
         this.movieAPI.getSerieShow(serie, (err, seriesData) => {
             if(err) 
                 return cb(err)
-            if(seriesData.results.length === 0 || serie !== seriesData.results[0].name)
+            if(seriesData.results.length === 0)
                 return cb(null, {'message': `Could not find serie '${serie}'!`})
 
-            const serieRes = {
-                    'id': seriesData.results[0].id,
-                    'name': seriesData.results[0].name,
-                    'popularity': seriesData.results[0].popularity
-                }
-            cb(null, serieRes)
+            const series = []
+            seriesData.results.forEach(element => {
+                series.push({
+                    'id': element.id,
+                    'name': element.name,
+                    'popularity': element.popularity
+                })
+            })
+            cb(null, series)
         })
     }
 
@@ -123,8 +126,8 @@ module.exports = class cotaServices {
             const serieData = tasksResults[1]
 
             // Skip if the team is already in group
-            if(group.series.some(item => item.name == serie)) {
-                return cb(null, {'message': `The serie '${serie}' is already in group '${groupID}'!`})
+            if(group.series.some(item => item.name == serieData.results[0].name)) {
+                return cb(null, {'message': `The serie '${serieData.results[0].name}' is already in group '${groupID}'!`})
             }
 
             group.series.push({
