@@ -8,6 +8,27 @@
 	"item": [
 		{
 			"name": "GetPopular",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3afe8a60-d0d0-4b29-8ebb-c04ba4849cf3",
+						"exec": [
+							"pm.test(\"Should return sorted popular movies.\", function () {",
+							"    const res = pm.response.json();",
+							"    pm.expect(Object.keys(res).length).to.be.above(0)",
+							"    res.forEach(function(movie){",
+							"        pm.expect(movie.id).to.be.a('number')",
+							"        pm.expect(movie.title).to.be.a('string')",
+							"        pm.expect(movie.popularity).to.be.a('number')",
+							"    })",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -25,11 +46,32 @@
 		},
 		{
 			"name": "GetSerie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0e045112-9851-4602-ac87-0f77961be574",
+						"exec": [
+							"pm.test(\"Should return all series.\", function () {",
+							"    const res = pm.response.json();",
+							"    pm.expect(Object.keys(res).length).to.be.above(0)",
+							"    res.forEach(function(serie){",
+							"        pm.expect(serie.id).to.be.a('number')",
+							"        pm.expect(serie.name).to.be.a('string')",
+							"        pm.expect(serie.popularity).to.be.a('number')",
+							"    })",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/search/tv?query=Lost",
+					"raw": "{{BASE_URL}}/search/tv?query={{serie}}",
 					"host": [
 						"{{BASE_URL}}"
 					],
@@ -40,7 +82,7 @@
 					"query": [
 						{
 							"key": "query",
-							"value": "Lost"
+							"value": "{{serie}}"
 						}
 					]
 				}
@@ -226,7 +268,7 @@
 						"exec": [
 							"var jsonData = JSON.parse(responseBody)",
 							"",
-							"pm.test('Should return group with team added.', function() {",
+							"pm.test('Should return group with serie added.', function() {",
 							"    const res = pm.response.json();",
 							"    const serie = res.series[res.series.length-1]",
 							"    pm.expect(serie.name).to.be.a('string')",
@@ -243,7 +285,51 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": \"Lost\"\n}",
+					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/groups/series",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"groups",
+						"series"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteSerieFromGroup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a2448fbf-b8ce-4f78-b90a-b1f53e53df7d",
+						"exec": [
+							"pm.test('Should return group with serue removed.', function(){",
+							"    const res = pm.response.json();",
+							"    res.series.forEach(function(serie){",
+							"        pm.expect(serie.name).to.not.eql(environment.serie)",
+							"    })",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie}}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -288,7 +374,7 @@
 	],
 	"variable": [
 		{
-			"id": "60b3da02-54b2-4056-b712-93eaeba17128",
+			"id": "852cc846-2af6-4f95-9d9c-31d6a0a70aaa",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"

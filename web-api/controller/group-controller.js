@@ -40,6 +40,12 @@ module.exports = class groupController{
         })
     }
 
+    removeSerie(req, res){
+        this.service.removeSerieFromGroup(req.body.groupID, req.body.serie, (err, group) => {
+            this.constructor.buildResponse(err, group, res)
+        })
+    }
+
     /**
      * Builds the HTTP response
      * @param {ServerResponse} res - **ServerResponse** the response object

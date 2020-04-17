@@ -148,6 +148,24 @@ module.exports = class cotaServices {
         })
     }
 
+    removeSerieFromGroup(groupID, serie, cb){
+        this.db.findByID(groupID, (err, groupData) => {
+            if(err)
+                return cb(err)
+            
+            const serieIdx = groupData.series.findIndex(item => item.name == serie)
+            if(serieIdx === -1)
+                return cb(null, {'message': `Could not find serie '${serie}' in group '${groupID}'!`})
+            
+            groupData.series.splice(serieIdx, 1)
+            this.db.update(groupID, {'series': groupData.series}, (err, groupRes) => {
+                if(err)
+                    return cb(err)
+                cb(null, groupRes)
+            })
+        })
+    }
+
     static parallel(tasks, callback) {
         const results = []
         let counter = 0
