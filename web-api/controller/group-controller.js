@@ -34,6 +34,12 @@ module.exports = class groupController{
         })
     }
 
+    addSerie(req, res){
+        this.service.addSerieToGroup(req.params.groupID, req.query.query, (err, group) => {
+            this.constructor.buildResponse(err, group, res)
+        })
+    }
+
     /**
      * Builds the HTTP response
      * @param {ServerResponse} res - **ServerResponse** the response object

@@ -29,16 +29,17 @@ module.exports = class cotaServices {
 
     searchSerie(serie, cb){
         this.movieAPI.getSerieShow(serie, (err, seriesData) => {
-            const series = []
             if(err) 
                 return cb(err)
-            seriesData.results.forEach(element => {
-                series.push({
-                    'name': element.name,
-                    'popularity': element.popularity
-                })
-            })
-            cb(null, series)
+            if(seriesData.results.length === 0 || serie !== seriesData.results[0].name)
+                return cb(null, {'message': `Could not find serie '${serie}'!`})
+
+            const serieRes = {
+                    'id': seriesData.results[0].id,
+                    'name': seriesData.results[0].name,
+                    'popularity': seriesData.results[0].popularity
+                }
+            cb(null, serieRes)
         })
     }
 
@@ -100,6 +101,61 @@ module.exports = class cotaServices {
             if(err)
                 return cb(err)
             cb(null, groupData)
+        })
+    }
+
+    addSerieToGroup(groupID, serie, cb){
+        // Needed to add closure of lambda function tasks
+        const {db, movieAPI} = this
+
+        //Load group and serie
+        const tasks = [
+            taskCB => db.findByID(groupID, taskCB),
+            taskCB => movieAPI.getSerieShow(serie, taskCB)
+        ]
+
+        // Called once all tasks have completed
+        this.constructor.parallel(tasks, (err, tasksResults) => {
+            if(err)
+                return cb(err)
+
+            const group = tasksResults[0]
+            const serieData = tasksResults[1]
+
+            // Skip if the team is already in group
+            if(group.series.some(item => item.name == serie)) {
+                return cb(null, {'message': `The serie '${serie}' is already in group '${groupID}'!`})
+            }
+
+            group.series.push({
+                    'id': serieData.results[0].id,
+                    'name': serieData.results[0].name,
+                    'popularity': serieData.results[0].popularity
+                })
+
+            db.update(groupID, {'series': group.series}, (err, groupRes) => {
+                if(err)
+                    return cb(err)
+                cb(null, groupRes)
+            })
+        })
+    }
+
+    static parallel(tasks, callback) {
+        const results = []
+        let counter = 0
+    
+        tasks.forEach((task, index) => {
+            task((err, result) => {
+                if(err)
+                    return callback(err)
+    
+                counter++
+                results[index] = result
+    
+                if(counter == tasks.length)
+                    callback(null, results)
+            })
         })
     }
 }

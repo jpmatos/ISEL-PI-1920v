@@ -24,6 +24,8 @@ module.exports = class cotaDB{
             found.name = document.name
         if(document.description)
             found.description = document.description
+        if(document.series)
+            found.series = document.series
         cb(null, found)
     }
 

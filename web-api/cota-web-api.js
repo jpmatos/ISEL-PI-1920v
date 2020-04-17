@@ -9,7 +9,7 @@ module.exports = (router, cotaController, groupController) => {
     router.put('/groups/:groupID', (req, res) => groupController.edit(req, res))
     router.get('/groups', (req, res) => groupController.getAll(req, res))
     router.get('/groups/:groupID', (req, res) => groupController.getSingle(req, res))
-    // router.put('')
+    router.put('/groups/:groupID/series', (req, res) => groupController.addSerie(req, res))
     
     return router
 }

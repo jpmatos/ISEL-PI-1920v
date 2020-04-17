@@ -24,6 +24,30 @@
 			"response": []
 		},
 		{
+			"name": "GetSerie",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/search/tv?query=Lost",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"search",
+						"tv"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Lost"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "CreateGroup",
 			"event": [
 				{
@@ -119,6 +143,104 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GetAllGroups",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "35b3cb7b-b260-4f38-89f9-e2460d414ff6",
+						"exec": [
+							"pm.test(\"Should return all groups\", function(){",
+							"    const res = pm.response.json();",
+							"    res.forEach(function(group){",
+							"      pm.expect(group._id).to.be.a('number')",
+							"      pm.expect(group.name).to.exist",
+							"      pm.expect(group.description).to.exist",
+							"      pm.expect(group.series).to.exist",
+							"    })",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/groups",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetGroup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a28ab700-418e-431f-86b1-0becb77b26db",
+						"exec": [
+							"pm.test('Should return the requested group.', function(){",
+							"    const res = pm.response.json();",
+							"    pm.expect(res._id).to.be.a('number');",
+							"    pm.expect(res.name).to.exist",
+							"    pm.expect(res.description).to.exist",
+							"    pm.expect(res).to.have.a.property('series')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/groups/{{groupID}}",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"groups",
+						"{{groupID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddSerieToGroup",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_URL}}/groups/{{groupID}}/series?query=Lost",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"groups",
+						"{{groupID}}",
+						"series"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Lost"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -145,7 +267,7 @@
 	],
 	"variable": [
 		{
-			"id": "79cb879d-f4b8-40fd-b513-2704f7afc3d7",
+			"id": "d88d27f6-3c9d-4fec-8827-6e353f93ed96",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"
