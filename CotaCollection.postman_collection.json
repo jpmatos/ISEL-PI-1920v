@@ -7,6 +7,348 @@
 	},
 	"item": [
 		{
+			"name": "GetGroupSeriesSorted",
+			"item": [
+				{
+					"name": "CreateGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1650e6c-3123-4586-b8e5-f767e977585c",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"groupID\", jsonData._id)",
+									"",
+									"pm.test('Should return inserted group.', function(){",
+									"    const res = pm.response.json();",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('number');",
+									"    pm.expect(res.name).to.eql(req.name)",
+									"    pm.expect(res.description).to.eql(req.description)",
+									"    pm.expect(res).to.have.a.property('series')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/groups",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups"
+							]
+						},
+						"description": "Creates a group"
+					},
+					"response": []
+				},
+				{
+					"name": "AddSerieToGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should return group with serie added.', function() {",
+									"    const res = pm.response.json();",
+									"    const serie = res.series[res.series.length-1]",
+									"    pm.expect(serie.name).to.be.a('string')",
+									"    pm.expect(serie.id).to.be.a('number')",
+									"    pm.expect(serie.popularity).to.be.a('number')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie1}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/groups/series",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddSerieToGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should return group with serie added.', function() {",
+									"    const res = pm.response.json();",
+									"    const serie = res.series[res.series.length-1]",
+									"    pm.expect(serie.name).to.be.a('string')",
+									"    pm.expect(serie.id).to.be.a('number')",
+									"    pm.expect(serie.popularity).to.be.a('number')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie2}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/groups/series",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddSerieToGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should return group with serie added.', function() {",
+									"    const res = pm.response.json();",
+									"    const serie = res.series[res.series.length-1]",
+									"    pm.expect(serie.name).to.be.a('string')",
+									"    pm.expect(serie.id).to.be.a('number')",
+									"    pm.expect(serie.popularity).to.be.a('number')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie3}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/groups/series",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddSerieToGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should return group with serie added.', function() {",
+									"    const res = pm.response.json();",
+									"    const serie = res.series[res.series.length-1]",
+									"    pm.expect(serie.name).to.be.a('string')",
+									"    pm.expect(serie.id).to.be.a('number')",
+									"    pm.expect(serie.popularity).to.be.a('number')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie4}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/groups/series",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddSerieToGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should return group with serie added.', function() {",
+									"    const res = pm.response.json();",
+									"    const serie = res.series[res.series.length-1]",
+									"    pm.expect(serie.name).to.be.a('string')",
+									"    pm.expect(serie.id).to.be.a('number')",
+									"    pm.expect(serie.popularity).to.be.a('number')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie5}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/groups/series",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups",
+								"series"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetGroupSeriesSorted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c38a2b2-3a22-4584-ac20-71b87a65d67b",
+								"exec": [
+									"pm.test(\"Should return sorted and filtered series from a group\", function(){",
+									"    const res = pm.response.json();",
+									"    let lastVote = -1",
+									"    res.forEach(function(serie){",
+									"        if(lastVote == -1)",
+									"            lastVote = serie.vote_average",
+									"        pm.expect(serie.vote_average).to.be.at.most(lastVote)",
+									"        pm.expect(serie.vote_average).to.be.at.most(parseFloat(environment.max))",
+									"        pm.expect(serie.vote_average).to.be.at.least(parseFloat(environment.min))",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/groups/{{groupID}}/series?min={{min}}&max={{max}}",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"groups",
+								"{{groupID}}",
+								"series"
+							],
+							"query": [
+								{
+									"key": "min",
+									"value": "{{min}}"
+								},
+								{
+									"key": "max",
+									"value": "{{max}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "GetPopular",
 			"event": [
 				{
@@ -374,7 +716,7 @@
 	],
 	"variable": [
 		{
-			"id": "852cc846-2af6-4f95-9d9c-31d6a0a70aaa",
+			"id": "3279149e-cf89-4c5e-9aa5-7eb0cc930979",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"

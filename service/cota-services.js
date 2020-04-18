@@ -39,7 +39,8 @@ module.exports = class cotaServices {
                 series.push({
                     'id': element.id,
                     'name': element.name,
-                    'popularity': element.popularity
+                    'popularity': element.popularity,
+                    'vote_average': element.vote_average
                 })
             })
             cb(null, series)
@@ -137,7 +138,8 @@ module.exports = class cotaServices {
             group.series.push({
                     'id': serieData.results[0].id,
                     'name': serieData.results[0].name,
-                    'popularity': serieData.results[0].popularity
+                    'popularity': serieData.results[0].popularity,
+                    'vote_average': serieData.results[0].vote_average
                 })
 
             db.update(groupID, {'series': group.series}, (err, groupRes) => {
@@ -163,6 +165,19 @@ module.exports = class cotaServices {
                     return cb(err)
                 cb(null, groupRes)
             })
+        })
+    }
+
+    getSeriesSorted(groupID, min, max, cb){
+        this.db.findByID(groupID, (err, groupData) => {
+            if(err)
+                return cb(err)
+
+            let series = groupData.series
+                .sort((a, b) => (a.vote_average < b.vote_average) ? 1 : -1)
+                .filter(item => ((parseFloat(max) > item.vote_average) && (parseFloat(min) < item.vote_average)))
+
+            cb(null, series)
         })
     }
 

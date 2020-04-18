@@ -24,8 +24,7 @@ module.exports = class cotaController {
     }
 
     searchSerie(req, res){
-        let serie = req.query.query
-        this.cotaService.searchSerie(serie, (err, serie) =>{
+        this.cotaService.searchSerie(req.query.query, (err, serie) =>{
             this.constructor.buildResponse(res, err, serie)
         })
     }

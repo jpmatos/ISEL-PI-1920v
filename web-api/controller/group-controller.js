@@ -46,6 +46,12 @@ module.exports = class groupController{
         })
     }
 
+    getSeries(req, res){
+        this.service.getSeriesSorted(req.params.groupID, req.query.min, req.query.max, (err, seriesData) => {
+            this.constructor.buildResponse(err, seriesData, res)
+        })
+    }
+
     /**
      * Builds the HTTP response
      * @param {ServerResponse} res - **ServerResponse** the response object
