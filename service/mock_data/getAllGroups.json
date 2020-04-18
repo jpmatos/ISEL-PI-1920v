@@ -1,0 +1,20 @@
+[
+    {
+        "_id": 1000,
+        "name": "NameEdited",
+        "description": "DescriptionEdited",
+        "series": 0
+    },
+    {
+        "_id": 1001,
+        "name": "Name",
+        "description": "Description",
+        "series": 0
+    },
+    {
+        "_id": 1002,
+        "name": "Name",
+        "description": "Description",
+        "series": 0
+    }
+]

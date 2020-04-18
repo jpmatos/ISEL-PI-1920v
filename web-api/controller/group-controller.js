@@ -61,11 +61,15 @@ module.exports = class groupController{
      */
     static buildResponse(err, data, res, sucessCode = 200) {
         if(err) {
-            // Return 404 if the requested resource does not exist
-            let status = err.status || err.found ? null : '404'
-
-            res.writeHead(status ? status : 500, status != 500 ? '' : 'Internal Server Error')
-            res.end()
+            let status = err.status ? err.status : '500'
+            res.writeHead(status, {
+                'Content-Type': 'application/json'
+            })
+            if(typeof err === 'object') {
+                const message = err.message ? err.message : 'Unspecified message'
+                err = JSON.stringify({ 'message': message })
+            }
+            res.end(err)
         }
         else {
             res.writeHead(sucessCode, {

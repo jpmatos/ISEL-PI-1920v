@@ -18,9 +18,10 @@ module.exports = class cotaServices {
                 return cb(err)
             moviesData.results.forEach(element => {
                 movies.push({
-                    'popularity':element.popularity,
                     'id':element.id,
-                    'title': element.original_title
+                    'name': element.original_title,
+                    'popularity': element.popularity,
+                    'vote_average': element.vote_average
                 })
             });
             cb(null, movies)
