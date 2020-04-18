@@ -387,7 +387,7 @@
 			"response": []
 		},
 		{
-			"name": "GetSerie",
+			"name": "SearchSerie",
 			"event": [
 				{
 					"listen": "test",
@@ -413,7 +413,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/search/tv?query={{serie}}",
+					"raw": "{{BASE_URL}}/search/tv?query={{serie1Query}}",
 					"host": [
 						"{{BASE_URL}}"
 					],
@@ -424,7 +424,7 @@
 					"query": [
 						{
 							"key": "query",
-							"value": "{{serie}}"
+							"value": "{{serie1Query}}"
 						}
 					]
 				}
@@ -482,7 +482,7 @@
 			"response": []
 		},
 		{
-			"name": "UpdateGroup",
+			"name": "EditGroup",
 			"event": [
 				{
 					"listen": "test",
@@ -627,7 +627,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie}}\n}",
+					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie1}}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -648,7 +648,7 @@
 			"response": []
 		},
 		{
-			"name": "DeleteSerieFromGroup",
+			"name": "RemoveSerieFromGroup",
 			"event": [
 				{
 					"listen": "test",
@@ -671,7 +671,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie}}\n}",
+					"raw": "{\n\t\"groupID\": {{groupID}},\n\t\"serie\": {{serie1}}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -716,7 +716,7 @@
 	],
 	"variable": [
 		{
-			"id": "3279149e-cf89-4c5e-9aa5-7eb0cc930979",
+			"id": "bc0f98e2-3f94-4e6a-aaee-6d889f975145",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"
