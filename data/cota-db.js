@@ -20,6 +20,12 @@ module.exports = class cotaDB{
 
     update(id, document, cb) {
         let found = this.documents.find(item => item._id == parseInt(id))
+        if(!found)
+            return cb({
+                'statusCode': 404,
+                'message': `Could not find group '${id}'!`
+            })
+
         if(document.name)
             found.name = document.name
         if(document.description)
@@ -35,6 +41,12 @@ module.exports = class cotaDB{
 
     findByID(id, cb){
         let found = this.documents.find(item => item._id == parseInt(id))
+        if(!found)
+            return cb({
+                'statusCode': 404,
+                'message': `Could not find group '${id}'!`
+            })
+            
         cb(null, found)
     }
 } 
