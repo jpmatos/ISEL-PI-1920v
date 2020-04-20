@@ -396,12 +396,9 @@
 						"exec": [
 							"pm.test(\"Should return all series.\", function () {",
 							"    const res = pm.response.json();",
-							"    pm.expect(Object.keys(res).length).to.be.above(0)",
-							"    res.forEach(function(serie){",
-							"        pm.expect(serie.id).to.be.a('number')",
-							"        pm.expect(serie.name).to.be.a('string')",
-							"        pm.expect(serie.popularity).to.be.a('number')",
-							"    })",
+							"    pm.expect(res.id).to.be.a('number')",
+							"    pm.expect(res.name).to.be.a('string')",
+							"    pm.expect(res.popularity).to.be.a('number')",
 							"});",
 							""
 						],
@@ -413,19 +410,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/search/tv?query={{serie1Query}}",
+					"raw": "{{BASE_URL}}/tv/{{serie1}}",
 					"host": [
 						"{{BASE_URL}}"
 					],
 					"path": [
-						"search",
-						"tv"
-					],
-					"query": [
-						{
-							"key": "query",
-							"value": "{{serie1Query}}"
-						}
+						"tv",
+						"{{serie1}}"
 					]
 				}
 			},
@@ -716,7 +707,7 @@
 	],
 	"variable": [
 		{
-			"id": "bc0f98e2-3f94-4e6a-aaee-6d889f975145",
+			"id": "70799a5f-f446-48c3-b9d5-4ea6f9fc89c5",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"

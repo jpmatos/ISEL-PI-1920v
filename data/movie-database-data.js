@@ -17,7 +17,7 @@ module.exports = class movieData {
     }
 
     getSerieShow(serie, cb){
-        this.makeRequest('GET', '/search/tv', `query=${serie}&`, cb)
+        this.makeRequest('GET', `/tv/${serie}`, null, cb)
     }
 
     makeRequest(method, uri, queryParams, callback) {
@@ -32,8 +32,11 @@ module.exports = class movieData {
             // },
             // 'qs': queryParams
         }, (err, res, body) => {
-            if(err || res.statusCode != 200) 
+            if(err || (res.statusCode != 200 && res.statusCode != 200))
+            {
+                body.statusCode = res.statusCode
                 return callback(err || body)
+            }
             callback(null, body)
         })
     }

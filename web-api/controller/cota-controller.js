@@ -24,7 +24,7 @@ module.exports = class cotaController {
     }
 
     searchSerie(req, res){
-        this.cotaService.searchSerie(req.query.query, (err, serie) =>{
+        this.cotaService.searchSerie(req.params.serieID, (err, serie) =>{
             this.constructor.buildResponse(res, err, serie)
         })
     }
@@ -40,9 +40,10 @@ module.exports = class cotaController {
      */
     static buildResponse(res, err, data, sucessCode = 200) {
         if(err) {
-            // TODO: Return 404 if the requested resource does not exist
-            res.writeHead(500, 'Internal Server Error')
-            res.end()
+            res.writeHead(err.statusCode, {
+                'Content-Type': 'application/json'
+            })
+            res.end(JSON.stringify({'message': err.status_message }))
         }
         else {
             res.writeHead(sucessCode, {

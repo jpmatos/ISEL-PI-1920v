@@ -29,22 +29,17 @@ module.exports = class cotaServices {
     }
 
     searchSerie(serie, cb){
-        this.movieAPI.getSerieShow(serie, (err, seriesData) => {
+        this.movieAPI.getSerieShow(serie, (err, serieData) => {
             if(err) 
                 return cb(err)
-            if(seriesData.results.length === 0)
-                return cb(null, {'message': `Could not find serie '${serie}'!`})
 
-            const series = []
-            seriesData.results.forEach(element => {
-                series.push({
-                    'id': element.id,
-                    'name': element.name,
-                    'popularity': element.popularity,
-                    'vote_average': element.vote_average
-                })
-            })
-            cb(null, series)
+            const serieRes = {
+                'id': serieData.id,
+                'name': serieData.name,
+                'popularity': serieData.popularity,
+                'vote_average': serieData.vote_average
+            }
+            cb(null, serieRes)
         })
     }
 
@@ -127,20 +122,16 @@ module.exports = class cotaServices {
             const group = tasksResults[0]
             const serieData = tasksResults[1]
 
-            // See if a serie was found
-            if(serieData.results.length === 0)
-                return cb(null, {'message': `Could not find serie '${serie}'!`})
-
             // Skip if the team is already in group
-            if(group.series.some(item => item.name == serieData.results[0].name)) {
-                return cb(null, {'message': `The serie '${serieData.results[0].name}' is already in group '${groupID}'!`})
+            if(group.series.some(item => item.name == serieData.name)) {
+                return cb(null, {'message': `The serie '${serieData.id}' is already in group '${groupID}'!`})
             }
 
             group.series.push({
-                    'id': serieData.results[0].id,
-                    'name': serieData.results[0].name,
-                    'popularity': serieData.results[0].popularity,
-                    'vote_average': serieData.results[0].vote_average
+                    'id': serieData.id,
+                    'name': serieData.name,
+                    'popularity': serieData.popularity,
+                    'vote_average': serieData.vote_average
                 })
 
             db.update(groupID, {'series': group.series}, (err, groupRes) => {
@@ -156,7 +147,7 @@ module.exports = class cotaServices {
             if(err)
                 return cb(err)
             
-            const serieIdx = groupData.series.findIndex(item => item.name == serie)
+            const serieIdx = groupData.series.findIndex(item => item.id == serie)
             if(serieIdx === -1)
                 return cb(null, {'message': `Could not find serie '${serie}' in group '${groupID}'!`})
             

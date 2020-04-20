@@ -48,13 +48,11 @@ module.exports = class cotaServices {
     }
 
     addSerieToGroup(groupID, serie, cb){
-        serie = serie.replace(" ", "_")
         const filePath = this.path.join(__dirname, `/mock_data/addSerieToGroup-${groupID}-${serie}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
     removeSerieFromGroup(groupID, serie, cb){
-        serie = serie.replace(" ", "_")
         const filePath = this.path.join(__dirname, `/mock_data/removeSerieFromGroup-${groupID}-${serie}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
