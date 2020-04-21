@@ -34,14 +34,14 @@ module.exports = class groupController{
         })
     }
 
-    addSerie(req, res){
-        this.service.addSerieToGroup(req.params.groupID, req.params.serieID, (err, group) => {
+    addSeries(req, res){
+        this.service.addSeriesToGroup(req.params.groupID, req.params.seriesID, (err, group) => {
             this.constructor.buildResponse(err, group, res)
         })
     }
 
-    removeSerie(req, res){
-        this.service.removeSerieFromGroup(req.params.groupID, req.params.serieID, (err, group) => {
+    removeSeries(req, res){
+        this.service.removeSeriesFromGroup(req.params.groupID, req.params.seriesID, (err, group) => {
             this.constructor.buildResponse(err, group, res)
         })
     }

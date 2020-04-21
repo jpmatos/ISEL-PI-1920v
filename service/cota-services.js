@@ -28,18 +28,18 @@ module.exports = class cotaServices {
         })
     }
 
-    searchSerie(serie, cb){
-        this.movieAPI.getSerieShow(serie, (err, serieData) => {
+    searchSeries(series, cb){
+        this.movieAPI.getSerieShow(series, (err, seriesData) => {
             if(err) 
                 return cb(err)
 
-            const serieRes = {
-                'id': serieData.id,
-                'name': serieData.name,
-                'popularity': serieData.popularity,
-                'vote_average': serieData.vote_average
+            const seriesRes = {
+                'id': seriesData.id,
+                'name': seriesData.name,
+                'popularity': seriesData.popularity,
+                'vote_average': seriesData.vote_average
             }
-            cb(null, serieRes)
+            cb(null, seriesRes)
         })
     }
 
@@ -104,14 +104,14 @@ module.exports = class cotaServices {
         })
     }
 
-    addSerieToGroup(groupID, serie, cb){
+    addSeriesToGroup(groupID, series, cb){
         // Needed to add closure of lambda function tasks
         const {db, movieAPI} = this
 
         //Load group and serie
         const tasks = [
             taskCB => db.findByID(groupID, taskCB),
-            taskCB => movieAPI.getSerieShow(serie, taskCB)
+            taskCB => movieAPI.getSeriesShow(series, taskCB)
         ]
 
         // Called once all tasks have completed
@@ -120,18 +120,18 @@ module.exports = class cotaServices {
                 return cb(err)
 
             const group = tasksResults[0]
-            const serieData = tasksResults[1]
+            const seriesData = tasksResults[1]
 
             // Skip if the team is already in group
-            if(group.series.some(item => item.name == serieData.name)) {
-                return cb(null, {'message': `The serie '${serieData.id}' is already in group '${groupID}'!`})
+            if(group.series.some(item => item.name == seriesData.name)) {
+                return cb(null, {'message': `The series '${seriesData.id}' is already in group '${groupID}'!`})
             }
 
             group.series.push({
-                    'id': serieData.id,
-                    'name': serieData.name,
-                    'popularity': serieData.popularity,
-                    'vote_average': serieData.vote_average
+                    'id': seriesData.id,
+                    'name': seriesData.name,
+                    'popularity': seriesData.popularity,
+                    'vote_average': seriesData.vote_average
                 })
 
             db.update(groupID, {'series': group.series}, (err, groupRes) => {
@@ -142,16 +142,16 @@ module.exports = class cotaServices {
         })
     }
 
-    removeSerieFromGroup(groupID, serie, cb){
+    removeSeriesFromGroup(groupID, series, cb){
         this.db.findByID(groupID, (err, groupData) => {
             if(err)
                 return cb(err)
             
-            const serieIdx = groupData.series.findIndex(item => item.id == serie)
-            if(serieIdx === -1)
-                return cb(null, {'message': `Could not find serie '${serie}' in group '${groupID}'!`})
+            const seriesIdx = groupData.series.findIndex(item => item.id == series)
+            if(seriesIdx === -1)
+                return cb(null, {'message': `Could not find serie '${series}' in group '${groupID}'!`})
             
-            groupData.series.splice(serieIdx, 1)
+            groupData.series.splice(seriesIdx, 1)
             this.db.update(groupID, {'series': groupData.series}, (err, groupRes) => {
                 if(err)
                     return cb(err)

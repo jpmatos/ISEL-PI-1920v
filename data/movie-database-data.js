@@ -16,8 +16,8 @@ module.exports = class movieData {
         this.makeRequest('GET', '/movie/popular', null, cb)
     }
 
-    getSerieShow(serie, cb){
-        this.makeRequest('GET', `/tv/${serie}`, null, cb)
+    getSeriesShow(series, cb){
+        this.makeRequest('GET', `/tv/${series}`, null, cb)
     }
 
     makeRequest(method, uri, queryParams, callback) {

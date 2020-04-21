@@ -17,9 +17,9 @@ module.exports = class cotaServices {
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
-    searchSerie(serie, cb){
-        serie = serie.replace(" ", "_")
-        const filePath = this.path.join(__dirname, `/mock_data/searchSerie-${serie}.json`)
+    searchSeries(series, cb){
+        series = series.replace(" ", "_")
+        const filePath = this.path.join(__dirname, `/mock_data/searchSerie-${series}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
@@ -47,13 +47,13 @@ module.exports = class cotaServices {
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
-    addSerieToGroup(groupID, serie, cb){
-        const filePath = this.path.join(__dirname, `/mock_data/addSerieToGroup-${groupID}-${serie}.json`)
+    addSeriesToGroup(groupID, series, cb){
+        const filePath = this.path.join(__dirname, `/mock_data/addSeriesToGroup-${groupID}-${series}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
-    removeSerieFromGroup(groupID, serie, cb){
-        const filePath = this.path.join(__dirname, `/mock_data/removeSerieFromGroup-${groupID}-${serie}.json`)
+    removeSeriesFromGroup(groupID, series, cb){
+        const filePath = this.path.join(__dirname, `/mock_data/removeSeriesFromGroup-${groupID}-${series}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
