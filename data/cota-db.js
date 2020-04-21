@@ -35,6 +35,17 @@ class CotaDB{
         cb(null, found)
     }
 
+    delete(id, cb){
+        const documentIdx = this.documents.findIndex(item => item.id == id)
+        if(documentIdx === -1)
+            return cb({
+                'statusCode': 404,
+                'message': `Could not find group '${id}'!`
+            })
+        
+        this.documents = this.documents.splice(documentIdx, 1)
+    }
+
     getAll(cb){
         cb(null, this.documents)
     }

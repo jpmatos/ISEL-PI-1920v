@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/jpmatos/PI-1920v-LI51N-G08#readme",
   "dependencies": {
+    "chai": "^4.2.0",
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
     "request": "^2.88.2"
   }
 }
