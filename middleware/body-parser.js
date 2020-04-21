@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports =  (req, res, next) => {
+function bodyParser(req, res, next){
     let body = []
     req.on('data', (chunk) => {
         body.push(chunk)
@@ -10,3 +10,4 @@ module.exports =  (req, res, next) => {
         next()
     })
 }
+module.exports = bodyParser

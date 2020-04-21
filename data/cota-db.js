@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = class cotaDB{
+class CotaDB{
     
     constructor(){
         this.documents = []
@@ -8,7 +8,7 @@ module.exports = class cotaDB{
     }
 
     static init(){
-        return new cotaDB()
+        return new CotaDB()
     }
 
     create(document, cb){
@@ -46,7 +46,8 @@ module.exports = class cotaDB{
                 'statusCode': 404,
                 'message': `Could not find group '${id}'!`
             })
-            
+
         cb(null, found)
     }
-} 
+}
+module.exports = CotaDB

@@ -326,7 +326,7 @@
 							"    pm.expect(Object.keys(res).length).to.be.above(0)",
 							"    res.forEach(function(movie){",
 							"        pm.expect(movie.id).to.be.a('number')",
-							"        pm.expect(movie.title).to.be.a('string')",
+							"        pm.expect(movie.name).to.be.a('string')",
 							"        pm.expect(movie.popularity).to.be.a('number')",
 							"    })",
 							"});",
@@ -659,7 +659,7 @@
 	],
 	"variable": [
 		{
-			"id": "a2651fb1-c5bc-4992-a1da-75dfa85d79e2",
+			"id": "093e414d-b819-4f2c-a91d-95c5d442fbdf",
 			"key": "BASE_URL",
 			"value": "http://localhost:8000",
 			"type": "string"

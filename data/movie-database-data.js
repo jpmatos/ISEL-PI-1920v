@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = class movieData {
+class MovieData {
 
     constructor(request, baseURL, token){
         this.request = request
@@ -9,7 +9,7 @@ module.exports = class movieData {
     }
 
     static init(request, baseURL, token){
-        return new movieData(request, baseURL, token)
+        return new MovieData(request, baseURL, token)
     }
 
     getPopularMovies(cb){
@@ -41,3 +41,4 @@ module.exports = class movieData {
         })
     }
 }
+module.exports = MovieData

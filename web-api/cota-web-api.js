@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = (router, cotaController, groupController) => {
+function setRouter(router, cotaController, groupController){
     router.get('/', (req, res) => cotaController.home(req, res))
     router.get('/popular', (req, res) => cotaController.popular(req, res))
     router.get('/tv/:seriesID', (req, res) => cotaController.searchSeries(req, res))
@@ -15,3 +15,4 @@ module.exports = (router, cotaController, groupController) => {
     
     return router
 }
+module.exports = setRouter

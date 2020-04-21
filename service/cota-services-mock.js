@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = class cotaServices {
+class CotaServices {
     constructor(fs, path){
         this.fs = fs
         this.path = path
@@ -9,7 +9,7 @@ module.exports = class cotaServices {
     static init (){
         const fs = require('fs')
         const path = require('path')
-        return new cotaServices(fs, path)
+        return new CotaServices(fs, path)
     }
 
     getPopular(cb){
@@ -18,21 +18,16 @@ module.exports = class cotaServices {
     }
 
     searchSeries(series, cb){
-        series = series.replace(" ", "_")
         const filePath = this.path.join(__dirname, `/mock_data/searchSerie-${series}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
     createGroup(name, desc, cb){
-        name = name.replace(" ", "_")
-        desc = desc.replace(" ", "_")
         const filePath = this.path.join(__dirname, `/mock_data/createGroup-${name}-${desc}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 
     editGroup(id, name, desc, cb){
-        name = name.replace(" ", "_")
-        desc = desc.replace(" ", "_")
         const filePath = this.path.join(__dirname, `/mock_data/editGroup-${id}-${name}-${desc}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
@@ -74,3 +69,4 @@ module.exports = class cotaServices {
         })
     }
 }
+module.exports = CotaServices

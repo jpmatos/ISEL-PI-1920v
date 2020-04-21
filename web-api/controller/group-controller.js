@@ -1,13 +1,13 @@
 'use strict'
 
-module.exports = class groupController{
+class GroupController{
 
     constructor(service){
         this.service = service
     }
 
     static init(service){
-        return new groupController(service)
+        return new GroupController(service)
     }
 
     create(req, res){
@@ -77,3 +77,4 @@ module.exports = class groupController{
         }
     }
 }
+module.exports = GroupController

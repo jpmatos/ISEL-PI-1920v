@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = class cotaServices {
+class CotaServices {
 
     constructor(movieAPI, db){
         this.movieAPI = movieAPI
@@ -8,7 +8,7 @@ module.exports = class cotaServices {
     }
 
     static init (movieAPI, db){
-        return new cotaServices(movieAPI, db)
+        return new CotaServices(movieAPI, db)
     }
 
     getPopular(cb){
@@ -191,3 +191,4 @@ module.exports = class cotaServices {
         })
     }
 }
+module.exports = CotaServices

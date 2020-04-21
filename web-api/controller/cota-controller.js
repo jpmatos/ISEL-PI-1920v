@@ -1,13 +1,13 @@
 'use strict'
 
-module.exports = class cotaController {
+class CotaController {
     
     constructor(cotaService){
         this.cotaService = cotaService
     }
 
     static init(cotaService){
-        return new cotaController(cotaService)
+        return new CotaController(cotaService)
     }
 
     home(req, res){
@@ -56,3 +56,4 @@ module.exports = class cotaController {
         }
     }
 }
+module.exports = CotaController
