@@ -29,7 +29,7 @@ module.exports = class cotaServices {
     }
 
     searchSeries(series, cb){
-        this.movieAPI.getSerieShow(series, (err, seriesData) => {
+        this.movieAPI.getSeriesShow(series, (err, seriesData) => {
             if(err) 
                 return cb(err)
 
