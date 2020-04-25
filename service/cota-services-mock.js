@@ -18,7 +18,7 @@ class CotaServices {
     }
 
     searchSeries(series, cb){
-        const filePath = this.path.join(__dirname, `/mock_data/searchSerie-${series}.json`)
+        const filePath = this.path.join(__dirname, `/mock_data/searchSeries-${series}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 

@@ -23,7 +23,7 @@ class CotaServices {
                     'popularity': element.popularity,
                     'vote_average': element.vote_average
                 })
-            });
+            })
             cb(null, movies)
         })
     }
@@ -130,8 +130,6 @@ class CotaServices {
             group.series.push({
                     'id': seriesData.id,
                     'name': seriesData.name,
-                    'popularity': seriesData.popularity,
-                    'vote_average': seriesData.vote_average
                 })
 
             db.update(groupID, {'series': group.series}, (err, groupRes) => {
@@ -165,11 +163,32 @@ class CotaServices {
             if(err)
                 return cb(err)
 
-            let series = groupData.series
+        // Needed to add closure of lambda function tasks
+        const {movieAPI} = this
+
+        //Request all series from API
+        const tasks = []
+        groupData.series.forEach(element => tasks.push(taskCB => movieAPI.getSeriesShow(element.id, taskCB)))
+
+        // Called once all tasks have completed
+        this.constructor.parallel(tasks, (err, tasksResults) => {
+            if(err)
+                return cb(err)
+
+            let series = []
+            tasksResults.forEach(element => series.push({
+                'id': element.id,
+                'name': element.name,
+                'popularity': element.popularity,
+                'vote_average': element.vote_average
+            }))
+
+            series = groupData.series
                 .sort((a, b) => (a.vote_average < b.vote_average) ? 1 : -1)
                 .filter(item => ((parseFloat(max) > item.vote_average) && (parseFloat(min) < item.vote_average)))
 
             cb(null, series)
+            })
         })
     }
 

@@ -3,17 +3,21 @@
     "description": "Description",
     "series": [
         {
+            "id": 4607,
+            "name": "Lost"
+        },
+        {
+            "id": 1396,
+            "name": "Breaking Bad"
+        },
+        {
             "id": 1405,
             "name": "Dexter"
         },
         {
             "id": 1399,
             "name": "Game of Thrones"
-        },
-        {
-            "id": 60059,
-            "name": "Better Call Saul"
         }
     ],
-    "_id": 1001
+    "_id": 1000
 }

@@ -1,23 +1,23 @@
 'use strict'
 
-//See if mock service was specified
-let cotaServicesPath
-if(process.argv[2] === 'mock') {
-  console.debug('Running Service in Mock environment.')
-  cotaServicesPath = './service/cota-services-mock'
-}
-else {
-  cotaServicesPath = './service/cota-services'
-}
-
 //See if mock API was specified
 let movieDataAPIPath
-if(process.argv[3] === 'mock') {
+if(process.argv[2] === 'mock') {
   console.debug('Running API in Mock environment.')
   movieDataAPIPath = './data/movie-database-data-mock'
 }
 else {
   movieDataAPIPath = './data/movie-database-data'
+}
+
+//See if mock service was specified
+let cotaServicesPath
+if(process.argv[3] === 'mock') {
+  console.debug('Running Service in Mock environment.')
+  cotaServicesPath = './service/cota-services-mock'
+}
+else {
+  cotaServicesPath = './service/cota-services'
 }
 
 //Load env variables

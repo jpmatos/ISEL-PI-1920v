@@ -4,33 +4,23 @@
     "series": [
         {
             "id": 4607,
-            "name": "Lost",
-            "popularity": 53.486,
-            "vote_average": 7.8
+            "name": "Lost"
         },
         {
             "id": 1396,
-            "name": "Breaking Bad",
-            "popularity": 91.049,
-            "vote_average": 8.5
+            "name": "Breaking Bad"
         },
         {
             "id": 1405,
-            "name": "Dexter",
-            "popularity": 25.514,
-            "vote_average": 8
+            "name": "Dexter"
         },
         {
             "id": 1399,
-            "name": "Game of Thrones",
-            "popularity": 79.791,
-            "vote_average": 8.2
+            "name": "Game of Thrones"
         },
         {
             "id": 60059,
-            "name": "Better Call Saul",
-            "popularity": 65.218,
-            "vote_average": 8.1
+            "name": "Better Call Saul"
         }
     ],
     "_id": 1002

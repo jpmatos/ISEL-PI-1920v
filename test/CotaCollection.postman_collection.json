@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cd9a5d2a-15c3-4a1f-8650-9dc651ab381f",
+		"_postman_id": "fe26906c-8f60-4d33-bc0d-544d3f8350e3",
 		"name": "CotaCollection",
 		"description": "Collection of API calls for COTA (Chelas Open TV Application).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -74,7 +74,6 @@
 									"    const serie = res.series[res.series.length-1]",
 									"    pm.expect(serie.name).to.be.a('string')",
 									"    pm.expect(serie.id).to.be.a('number')",
-									"    pm.expect(serie.popularity).to.be.a('number')",
 									"})"
 								],
 								"type": "text/javascript"
@@ -114,7 +113,6 @@
 									"    const serie = res.series[res.series.length-1]",
 									"    pm.expect(serie.name).to.be.a('string')",
 									"    pm.expect(serie.id).to.be.a('number')",
-									"    pm.expect(serie.popularity).to.be.a('number')",
 									"})"
 								],
 								"type": "text/javascript"
@@ -154,7 +152,6 @@
 									"    const serie = res.series[res.series.length-1]",
 									"    pm.expect(serie.name).to.be.a('string')",
 									"    pm.expect(serie.id).to.be.a('number')",
-									"    pm.expect(serie.popularity).to.be.a('number')",
 									"})"
 								],
 								"type": "text/javascript"
@@ -194,7 +191,6 @@
 									"    const serie = res.series[res.series.length-1]",
 									"    pm.expect(serie.name).to.be.a('string')",
 									"    pm.expect(serie.id).to.be.a('number')",
-									"    pm.expect(serie.popularity).to.be.a('number')",
 									"})"
 								],
 								"type": "text/javascript"
@@ -234,7 +230,6 @@
 									"    const serie = res.series[res.series.length-1]",
 									"    pm.expect(serie.name).to.be.a('string')",
 									"    pm.expect(serie.id).to.be.a('number')",
-									"    pm.expect(serie.popularity).to.be.a('number')",
 									"})"
 								],
 								"type": "text/javascript"
@@ -359,11 +354,10 @@
 					"script": {
 						"id": "0e045112-9851-4602-ac87-0f77961be574",
 						"exec": [
-							"pm.test(\"Should return all series.\", function () {",
+							"pm.test(\"Should a series.\", function () {",
 							"    const res = pm.response.json();",
 							"    pm.expect(res.id).to.be.a('number')",
 							"    pm.expect(res.name).to.be.a('string')",
-							"    pm.expect(res.popularity).to.be.a('number')",
 							"});",
 							""
 						],
@@ -572,7 +566,6 @@
 							"    const serie = res.series[res.series.length-1]",
 							"    pm.expect(serie.name).to.be.a('string')",
 							"    pm.expect(serie.id).to.be.a('number')",
-							"    pm.expect(serie.popularity).to.be.a('number')",
 							"})"
 						],
 						"type": "text/javascript"

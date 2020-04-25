@@ -1,7 +1,25 @@
 'use strict'
 
+//Load env variables
+const env = require('../env.json')
+Object.assign(process.env, env)
+
+//See if mock API was specified
+let cotaServicesPath
+if(env.MOCHA_API === 'mock') {
+    console.debug('Running Tests with mock API.')
+    cotaServicesPath = '../service/cota-services'
+}
+else {
+    console.debug('Running Tests with mock Service.')
+    cotaServicesPath = '../service/cota-services-mock'
+}
+
+
 const expect = require('chai').expect
-const cotaServices = require('../service/cota-services-mock').init()
+const movieDataAPI = require('../data/movie-database-data-mock').init()
+const cotaDB = require('../data/cota-db').init()
+const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB)
 
 describe('CotaService test API for Group', () => {
     const groupToAdd = {
@@ -21,6 +39,10 @@ describe('CotaService test API for Group', () => {
     const min = 7.9
     const max = 8.4
     let groupIDs = []
+
+    after(() => {
+        cotaDB.resetID()
+    })
 
     afterEach(() => {
         groupIDs = [] // clean
@@ -58,8 +80,6 @@ describe('CotaService test API for Group', () => {
                 const series = res.series[res.series.length - 1]
                 expect(series.id).to.eql(serieToAdd.id)
                 expect(series.name).to.be.a('string')
-                expect(series.popularity).to.be.a('number')
-                expect(series.vote_average).to.be.a('number')
                 done()
             })
         })

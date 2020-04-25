@@ -60,5 +60,9 @@ class CotaDB{
 
         cb(null, found)
     }
+
+    resetID(){
+        this.id = 1000
+    }
 }
 module.exports = CotaDB

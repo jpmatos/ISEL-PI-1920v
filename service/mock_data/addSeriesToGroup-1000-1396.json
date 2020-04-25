@@ -4,15 +4,11 @@
     "series": [
         {
             "id": 4607,
-            "name": "Lost",
-            "popularity": 53.486,
-            "vote_average": 7.8
+            "name": "Lost"
         },
         {
             "id": 1396,
-            "name": "Breaking Bad",
-            "popularity": 91.049,
-            "vote_average": 8.5
+            "name": "Breaking Bad"
         }
     ],
     "_id": 1000

@@ -16,7 +16,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program (MockService)",
+            "name": "Launch Program (MockAPI)",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -28,7 +28,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program (MockAPI)",
+            "name": "Launch Program (MockService)",
             "skipFiles": [
                 "<node_internals>/**"
             ],

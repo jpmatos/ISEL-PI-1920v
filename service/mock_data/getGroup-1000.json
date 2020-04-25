@@ -4,21 +4,15 @@
     "series": [
         {
             "id": 4607,
-            "name": "Lost",
-            "popularity": 53.486,
-            "vote_average": 7.8
+            "name": "Lost"
         },
         {
             "id": 1399,
-            "name": "Game of Thrones",
-            "popularity": 79.791,
-            "vote_average": 8.2
+            "name": "Game of Thrones"
         },
         {
             "id": 60059,
-            "name": "Better Call Saul",
-            "popularity": 65.218,
-            "vote_average": 8.1
+            "name": "Better Call Saul"
         }
     ],
     "_id": 1000
