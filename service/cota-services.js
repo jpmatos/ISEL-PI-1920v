@@ -51,11 +51,16 @@ class CotaServices {
 
         const group = {'name': name, 'description': desc, 'series': []}
 
-        this.db.create(group, (err, groupData) => {
+        this.db.create(group, (err, groupRes) => {
             if(err) 
                 return cb(err)
-            group._id = groupData._id
-            cb(null, group)
+                
+            cb(null, {
+                '_id': groupRes._id,
+                'name': name,
+                'description': desc,
+                'series': []
+            })
         })
     }
 
@@ -72,24 +77,32 @@ class CotaServices {
         if(desc) 
             updatedGroup.description = desc
 
-        this.db.update(id, updatedGroup, (err, groupData) => {
+        this.db.update(id, updatedGroup, (err, groupRes) => {
             if(err) 
                 return cb(err)            
-            cb(null, groupData)
+            cb(null, {
+                '_id': groupRes._id,
+                'name': groupRes.get._source.name,
+                'description': groupRes.get._source.description,
+                'series': groupRes.get._source.series
+            })
         })
     }
 
     getAllGroups(cb){
-        const groups = []
         this.db.getAll((err, groupData) => {
             if(err)
                 return cb(err)
+
+            groupData = groupData.hits.hits
+
+            const groups = []
             groupData.forEach(group => {
                 groups.push({
                     '_id': group._id,
-                    'name': group.name,
-                    'description': group.description,
-                    'series': group.series.length
+                    'name': group._source.name,
+                    'description': group._source.description,
+                    'series': group._source.series
                 })
             })
             cb(null, groups)
@@ -100,7 +113,15 @@ class CotaServices {
         this.db.findByID(groupID, (err, groupData) => {
             if(err)
                 return cb(err)
-            cb(null, groupData)
+
+            const group = {
+                '_id': groupData._id,
+                'name': groupData._source.name,
+                'description': groupData._source.description,
+                'series': groupData._source.series
+            }
+
+            cb(null, group)
         })
     }
 
@@ -119,12 +140,15 @@ class CotaServices {
             if(err)
                 return cb(err)
 
-            const group = tasksResults[0]
+            const group = tasksResults[0]._source
             const seriesData = tasksResults[1]
 
             // Skip if the team is already in group
             if(group.series.some(item => item.name == seriesData.name)) {
-                return cb(null, {'message': `The series '${seriesData.id}' is already in group '${groupID}'!`})
+                return cb(null, {
+                    'message': `The series '${seriesData.id}' is already in group '${groupID}'!`,
+                    'result': 'failed'
+                })
             }
 
             group.series.push({
@@ -135,7 +159,12 @@ class CotaServices {
             db.update(groupID, {'series': group.series}, (err, groupRes) => {
                 if(err)
                     return cb(err)
-                cb(null, groupRes)
+                cb(null, {
+                    '_id': groupRes._id,
+                    'name': groupRes.get._source.name,
+                    'description': groupRes.get._source.description,
+                    'series': groupRes.get._source.series
+                })
             })
         })
     }
@@ -145,15 +174,20 @@ class CotaServices {
             if(err)
                 return cb(err)
             
-            const seriesIdx = groupData.series.findIndex(item => item.id == series)
+            const seriesIdx = groupData._source.series.findIndex(item => item.id == series)
             if(seriesIdx === -1)
                 return cb(null, {'message': `Could not find serie '${series}' in group '${groupID}'!`})
             
-            groupData.series.splice(seriesIdx, 1)
-            this.db.update(groupID, {'series': groupData.series}, (err, groupRes) => {
+            groupData._source.series.splice(seriesIdx, 1)
+            this.db.update(groupID, {'series': groupData._source.series}, (err, groupRes) => {
                 if(err)
                     return cb(err)
-                cb(null, groupRes)
+                cb(null, {
+                    '_id': groupRes._id,
+                    'name': groupRes.get._source.name,
+                    'description': groupRes.get._source.description,
+                    'series': groupRes.get._source.series
+                })
             })
         })
     }
@@ -168,7 +202,7 @@ class CotaServices {
 
         //Request all series from API
         const tasks = []
-        groupData.series.forEach(element => tasks.push(taskCB => movieAPI.getSeriesShow(element.id, taskCB)))
+        groupData._source.series.forEach(element => tasks.push(taskCB => movieAPI.getSeriesShow(element.id, taskCB)))
 
         // Called once all tasks have completed
         this.constructor.parallel(tasks, (err, tasksResults) => {
@@ -183,7 +217,7 @@ class CotaServices {
                 'vote_average': element.vote_average
             }))
 
-            series = groupData.series
+            series = series
                 .sort((a, b) => (a.vote_average < b.vote_average) ? 1 : -1)
                 .filter(item => ((parseFloat(max) > item.vote_average) && (parseFloat(min) < item.vote_average)))
 

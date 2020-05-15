@@ -28,7 +28,7 @@ class CotaServices {
     }
 
     editGroup(id, name, desc, cb){
-        const filePath = this.path.join(__dirname, `/mock_data/editGroup-${id}-${name}-${desc}.json`)
+        const filePath = this.path.join(__dirname, `/mock_data/editGroup-${id}-${desc}.json`)
         this.constructor.buildResponse(filePath, this.fs, cb)
     }
 

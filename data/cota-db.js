@@ -1,68 +1,55 @@
 'use strict'
+const request = require('request')
 
 class CotaDB{
     
-    constructor(){
-        this.documents = []
-        this.id = 1000
+    constructor(host, index){
+        this.host = host
+        this.index = index
     }
 
-    static init(){
-        return new CotaDB()
+    static init(host, index){
+        return new CotaDB(host, index)
     }
 
     create(document, cb){
-        document._id = this.id
-        this.id += 1
-        this.documents.push(document)
-        cb(null, document)
+        this.makeRequest('POST', `${this.index}/_doc`, cb, document)
     }
 
     update(id, document, cb) {
-        let found = this.documents.find(item => item._id == parseInt(id))
-        if(!found)
-            return cb({
-                'statusCode': 404,
-                'message': `Could not find group '${id}'!`
-            })
-
-        if(document.name)
-            found.name = document.name
-        if(document.description)
-            found.description = document.description
-        if(document.series)
-            found.series = document.series
-        cb(null, found)
+        this.makeRequest('POST', `${this.index}/_update/${id}?_source`, cb, { 'doc': document})
     }
 
     delete(id, cb){
-        const documentIdx = this.documents.findIndex(item => item.id == id)
-        if(documentIdx === -1)
-            return cb({
-                'statusCode': 404,
-                'message': `Could not find group '${id}'!`
-            })
-        
-        this.documents = this.documents.splice(documentIdx, 1)
+        this.makeRequest('DELETE', `${this.index}/_update/${id}`, cb)
     }
 
     getAll(cb){
-        cb(null, this.documents)
+        this.makeRequest('GET', `${this.index}/_search`, cb)
     }
 
     findByID(id, cb){
-        let found = this.documents.find(item => item._id == parseInt(id))
-        if(!found)
-            return cb({
-                'statusCode': 404,
-                'message': `Could not find group '${id}'!`
-            })
-
-        cb(null, found)
+        this.makeRequest('GET', `${this.index}/_doc/${id}`, cb)
     }
 
     resetID(){
-        this.id = 1000
+
+    }
+
+    makeRequest(method, uri, callback, data = undefined) {
+        let options = {
+            'method': method,
+            'uri': `${this.host}/${uri}`,
+            'json': true,
+        }
+        if(data) options.body = data
+
+        request(options, (err, res, body) => {
+            if(err) {
+                return callback(err || body)
+            }
+            callback(null, body)
+        })
     }
 }
 module.exports = CotaDB

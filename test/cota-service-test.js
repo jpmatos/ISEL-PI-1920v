@@ -4,21 +4,32 @@
 const env = require('../env.json')
 Object.assign(process.env, env)
 
-//See if mock API was specified
+//See if mock API is set
 let cotaServicesPath
 if(env.MOCHA_API === 'mock') {
-    console.debug('Running Tests with mock API.')
+    console.debug('Running Tests with mock API')
     cotaServicesPath = '../service/cota-services'
 }
 else {
-    console.debug('Running Tests with mock Service.')
+    console.debug('Running Tests with mock Service')
     cotaServicesPath = '../service/cota-services-mock'
+}
+
+//See if mock DB is set
+let dbPath
+if(env.MOCHA_DB === 'mock'){
+    console.debug('Running Tests with mock DB')
+    dbPath = '../data/cota-db-mock'
+}
+else {
+    console.debug('Running Tests with Elasticseach DB')
+    dbPath = '../data/cota-db'
 }
 
 
 const expect = require('chai').expect
 const movieDataAPI = require('../data/movie-database-data-mock').init()
-const cotaDB = require('../data/cota-db').init()
+const cotaDB = require(dbPath).init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX)
 const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB)
 
 describe('CotaService test API for Group', () => {
@@ -50,7 +61,7 @@ describe('CotaService test API for Group', () => {
 
     it('Should create a group', done => {
         cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            expect(res._id).to.be.a('number')
+            expect(res._id).to.be.a('string')
             expect(res.name).to.eql(groupToAdd.name)
             expect(res.description).to.eql(groupToAdd.description)
             expect(res).to.have.a.property('series')
@@ -94,7 +105,7 @@ describe('CotaService test API for Group', () => {
                     groupIDs[2] = res._id
                     cotaServices.getAllGroups((err, res) => {
                         res.forEach(function(group) {
-                            expect(group._id).to.be.a('number')
+                            expect(group._id).to.be.a('string')
                             expect(group.name).to.exist
                             expect(group.description).to.exist
                             expect(group.series).to.exist
@@ -110,7 +121,7 @@ describe('CotaService test API for Group', () => {
         cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
             groupIDs[0] = res._id
             cotaServices.getGroup(groupIDs[0], (err, res) => {
-                expect(res._id).to.be.a('number')
+                expect(res._id).to.be.a('string')
                 expect(res.name).to.exist
                 expect(res.description).to.exist
                 expect(res).to.have.a.property('series')

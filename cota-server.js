@@ -3,7 +3,7 @@
 //See if mock API was specified
 let movieDataAPIPath
 if(process.argv[2] === 'mock') {
-  console.debug('Running API in Mock environment.')
+  console.debug('Running API in Mock environment')
   movieDataAPIPath = './data/movie-database-data-mock'
 }
 else {
@@ -13,7 +13,7 @@ else {
 //See if mock service was specified
 let cotaServicesPath
 if(process.argv[3] === 'mock') {
-  console.debug('Running Service in Mock environment.')
+  console.debug('Running Service in Mock environment')
   cotaServicesPath = './service/cota-services-mock'
 }
 else {
@@ -32,7 +32,7 @@ const request = require('request')
 const webApi = require('./web-api/cota-web-api')
 const bodyParser = require('./middleware/body-parser')
 const movieDataAPI = require(movieDataAPIPath).init(request, process.env.BASE_URL, process.env.MOVIE_API_TOKEN)
-const cotaDB = require('./data/cota-db').init()
+const cotaDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX)
 const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB)
 const cotaController = require('./web-api/controller/cota-controller').init(cotaServices)
 const groupController = require('./web-api/controller/group-controller').init(cotaServices)
