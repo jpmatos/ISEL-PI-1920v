@@ -11,17 +11,18 @@ class CotaDB{
         return new CotaDB()
     }
 
-    create(document, cb){
+    create(document){
         const doc = {
             '_id': this.id.toString(),
             '_source': document
         }
         this.documents.push(doc)
         this.id += 1
-        cb(null, doc)
+
+        return Promise.resolve(doc)
     }
 
-    update(id, document, cb) {
+    update(id, document) {
         let found = this.documents.find(item => item._id == parseInt(id))
         if(!found)
             return cb({
@@ -41,10 +42,10 @@ class CotaDB{
             'get': {'_source': found._source}
         }
 
-        cb(null, res)
+        return Promise.resolve(res)
     }
 
-    delete(id, cb){
+    delete(id){
         const documentIdx = this.documents.findIndex(item => item.id == id)
         if(documentIdx === -1)
             return cb({
@@ -54,7 +55,7 @@ class CotaDB{
         
         this.documents = this.documents.splice(documentIdx, 1)
 
-        cb(null, {
+        return Promise.resolve({
             '_id': id,
             'get': {'_source': this.documents[documentIdx]._source}
         })
@@ -63,7 +64,7 @@ class CotaDB{
     getAll(cb){
         const res = {'hits': {'hits': this.documents}}
         
-        cb(null, res)
+        return Promise.resolve(res)
     }
 
     findByID(id, cb){
@@ -74,7 +75,7 @@ class CotaDB{
                 'message': `Could not find group '${id}'!`
             })
 
-        cb(null, found)
+        return Promise.resolve(found)
     }
 
     resetID(){

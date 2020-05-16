@@ -26,13 +26,13 @@ Object.assign(process.env, env)
 
 //Require dependencies
 const express = require('express')
-const request = require('request')
+const nodefetch = require('node-fetch')
 
 //Require project files
 const webApi = require('./web-api/cota-web-api')
 const bodyParser = require('./middleware/body-parser')
-const movieDataAPI = require(movieDataAPIPath).init(request, process.env.BASE_URL, process.env.MOVIE_API_TOKEN)
-const cotaDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX)
+const movieDataAPI = require(movieDataAPIPath).init(process.env.BASE_URL, process.env.MOVIE_API_TOKEN, nodefetch)
+const cotaDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX, nodefetch)
 const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB)
 const cotaController = require('./web-api/controller/cota-controller').init(cotaServices)
 const groupController = require('./web-api/controller/group-controller').init(cotaServices)
@@ -46,5 +46,5 @@ app.use('/', webApi(express.Router(), cotaController, groupController))
 
 //Start server
 app.listen(process.env.PORT, () => 
-    console.log('HTTP server listening on port ' + process.env.PORT)
+  console.log('HTTP server listening on port ' + process.env.PORT)
 )

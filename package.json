@@ -28,6 +28,7 @@
   "homepage": "https://github.com/jpmatos/PI-1920v-LI51N-G08#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
     "request": "^2.88.2"
   },
   "devDependencies": {

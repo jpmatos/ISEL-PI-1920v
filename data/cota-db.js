@@ -1,55 +1,49 @@
 'use strict'
-const request = require('request')
 
 class CotaDB{
     
-    constructor(host, index){
+    constructor(host, index, fetch){
         this.host = host
         this.index = index
+        this.fetch = fetch
     }
 
-    static init(host, index){
-        return new CotaDB(host, index)
+    static init(host, index, fetch){
+        return new CotaDB(host, index, fetch)
     }
 
-    create(document, cb){
-        this.makeRequest('POST', `${this.index}/_doc`, cb, document)
+    create(document){
+        return this.makeRequest('POST', `${this.index}/_doc`, document)
     }
 
-    update(id, document, cb) {
-        this.makeRequest('POST', `${this.index}/_update/${id}?_source`, cb, { 'doc': document})
+    update(id, document) {
+        return this.makeRequest('POST', `${this.index}/_update/${id}?_source`, { 'doc': document})
     }
 
-    delete(id, cb){
-        this.makeRequest('DELETE', `${this.index}/_update/${id}`, cb)
+    delete(id){
+        return this.makeRequest('DELETE', `${this.index}/_update/${id}`)
     }
 
-    getAll(cb){
-        this.makeRequest('GET', `${this.index}/_search`, cb)
+    getAll(){
+        return this.makeRequest('GET', `${this.index}/_search`)
     }
 
-    findByID(id, cb){
-        this.makeRequest('GET', `${this.index}/_doc/${id}`, cb)
+    findByID(id){
+        return this.makeRequest('GET', `${this.index}/_doc/${id}`)
     }
 
     resetID(){
 
     }
 
-    makeRequest(method, uri, callback, data = undefined) {
-        let options = {
-            'method': method,
-            'uri': `${this.host}/${uri}`,
-            'json': true,
-        }
-        if(data) options.body = data
-
-        request(options, (err, res, body) => {
-            if(err) {
-                return callback(err || body)
-            }
-            callback(null, body)
-        })
+    makeRequest(method, uri, body = undefined) {
+        return this
+            .fetch(`${this.host}/${uri}`, {
+                    'method': method,
+                    'body': JSON.stringify(body),
+                    'headers': {'Content-Type': 'application/json'},
+                })
+            .then(res => res.json())
     }
 }
 module.exports = CotaDB

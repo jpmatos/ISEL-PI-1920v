@@ -7,31 +7,34 @@ class MovieData {
     }
 
     static init (){
-        const fs = require('fs')
+        const fs = require('fs').promises
         const path = require('path')
         return new MovieData(fs, path)
     }
 
-    getPopularMovies(cb){
+    getPopularMovies(){
         const filePath = this.path.join(__dirname, `/mock_data/getPopularMovies.json`)
-        this.constructor.buildResponse(filePath, this.fs, cb)
+        return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    getSeriesShow(series, cb){
+    getSeriesShow(series){
         const filePath = this.path.join(__dirname, `/mock_data/getSeriesShow-${series}.json`)
-        this.constructor.buildResponse(filePath, this.fs, cb)
+        return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    static buildResponse(filePath, fs, cb){
-        fs.readFile(filePath, (err, rawData) => {
-            if(err)
-                return cb({
+    static buildResponse(filePath, fs){
+        return fs
+            .readFile(filePath)
+            .then(rawData => {
+                const data = JSON.parse(rawData)
+                return data
+            })
+            .catch(err => {
+                return {
                     "message": `Could not find mock file in path ${filePath}`,
                     "status": 404
-                })
-            const data = JSON.parse(rawData)
-            cb(null, data)
-        })
+                }
+            })
     }
 }
 module.exports = MovieData

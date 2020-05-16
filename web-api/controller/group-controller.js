@@ -10,71 +10,78 @@ class GroupController{
         return new GroupController(service)
     }
 
-    create(req, res){
-        this.service.createGroup(req.body.name, req.body.description, (err, groupData) => {
-            this.constructor.buildResponse(err, groupData, res, 201)
-        })
+    create(req, res, next){
+        this.service
+            .createGroup(req.body.name, req.body.description)
+            .then(groupData => res.status(201).json(groupData))
+            .catch(next)
     }
 
-    edit(req, res) {
-        this.service.editGroup(req.params.groupID, req.body.name, req.body.description, (err, groupData) => {
-            this.constructor.buildResponse(err, groupData, res)
-        })
+    edit(req, res, next) {
+        this.service
+            .editGroup(req.params.groupID, req.body.name, req.body.description)
+            .then(groupData => res.status(200).json(groupData))
+            .catch(next)
     }
 
-    getAll(req, res){
-        this.service.getAllGroups((err, groups) => {
-            this.constructor.buildResponse(err, groups, res)
-        })
+    getAll(req, res, next){
+        this.service
+            .getAllGroups()
+            .then(groups => res.status(200).json(groups))
+            .catch(next)
     }
 
-    getSingle(req, res){
-        this.service.getGroup(req.params.groupID, (err, group) => {
-            this.constructor.buildResponse(err, group, res)
-        })
+    getSingle(req, res, next){
+        this.service
+            .getGroup(req.params.groupID)
+            .then(group => res.status(200).json(group))
+            .catch(next)
     }
 
-    addSeries(req, res){
-        this.service.addSeriesToGroup(req.params.groupID, req.params.seriesID, (err, group) => {
-            this.constructor.buildResponse(err, group, res)
-        })
+    addSeries(req, res, next){
+        this.service
+            .addSeriesToGroup(req.params.groupID, req.params.seriesID)
+            .then(groupData => res.status(200).json(groupData))
+            .catch(next)
     }
 
-    removeSeries(req, res){
-        this.service.removeSeriesFromGroup(req.params.groupID, req.params.seriesID, (err, group) => {
-            this.constructor.buildResponse(err, group, res)
-        })
+    removeSeries(req, res, next){
+        this.service
+            .removeSeriesFromGroup(req.params.groupID, req.params.seriesID)
+            .then(groupData => res.status(200).json(groupData))
+            .catch(next)
     }
 
-    getSeries(req, res){
-        this.service.getSeriesSorted(req.params.groupID, req.query.min, req.query.max, (err, seriesData) => {
-            this.constructor.buildResponse(err, seriesData, res)
-        })
+    getSeries(req, res, next){
+        this.service
+            .getSeriesSorted(req.params.groupID, req.query.min, req.query.max)
+            .then(seriesData => res.status(200).json(seriesData))
+            .catch(next)
     }
 
-    /**
-     * Builds the HTTP response
-     * @param {ServerResponse} res - **ServerResponse** the response object
-     * @param {string} data - the data object
-     * 
-     * @private
-     */
-    static buildResponse(err, data, res, sucessCode = 200) {
-        if(err) {
-            res.writeHead(err.statusCode ? err.statusCode : 500, {
-                'Content-Type': 'application/json'
-            })
-            res.end(JSON.stringify({'message': err.status_message ? err.status_message : err.message }))
-        }
-        else {
-            res.writeHead(sucessCode, {
-                'Content-Type': 'application/json'
-            })
-            if(typeof data === 'object') {
-                data = JSON.stringify(data)
-            }
-            res.end(data)
-        }
-    }
+    // /**
+    //  * Builds the HTTP response
+    //  * @param {ServerResponse} res - **ServerResponse** the response object
+    //  * @param {string} data - the data object
+    //  * 
+    //  * @private
+    //  */
+    // static buildResponse(err, data, res, sucessCode = 200) {
+    //     if(err) {
+    //         res.writeHead(err.statusCode ? err.statusCode : 500, {
+    //             'Content-Type': 'application/json'
+    //         })
+    //         res.end(JSON.stringify({'message': err.status_message ? err.status_message : err.message }))
+    //     }
+    //     else {
+    //         res.writeHead(sucessCode, {
+    //             'Content-Type': 'application/json'
+    //         })
+    //         if(typeof data === 'object') {
+    //             data = JSON.stringify(data)
+    //         }
+    //         res.end(data)
+    //     }
+    // }
 }
 module.exports = GroupController

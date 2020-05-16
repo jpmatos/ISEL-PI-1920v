@@ -2,43 +2,28 @@
 
 class MovieData {
 
-    constructor(request, baseURL, token){
-        this.request = request
+    constructor(baseURL, token, fetch){
         this.baseURL = baseURL
         this.token = token
+        this.fetch = fetch
     }
 
-    static init(request, baseURL, token){
-        return new MovieData(request, baseURL, token)
+    static init(baseURL, token, fetch){
+        return new MovieData(baseURL, token, fetch)
     }
 
-    getPopularMovies(cb){
-        this.makeRequest('GET', '/movie/popular', null, cb)
+    getPopularMovies(){
+        return this.makeRequest('GET', '/movie/popular')
     }
 
-    getSeriesShow(series, cb){
-        this.makeRequest('GET', `/tv/${series}`, null, cb)
+    getSeriesShow(series){
+        return this.makeRequest('GET', `/tv/${series}`)
     }
 
-    makeRequest(method, uri, queryParams, callback) {
-        if(queryParams == null || queryParams == undefined)
-            queryParams = ""
-        this.request({
-            'method': method,
-            'uri': this.baseURL + uri + "?" + queryParams + "api_key=" + this.token,
-            'json': true,
-            // 'headers': {
-            //     'X-Auth-Token': this.token
-            // },
-            // 'qs': queryParams
-        }, (err, res, body) => {
-            if(err || (res.statusCode != 200 && res.statusCode != 200))
-            {
-                body.statusCode = res.statusCode
-                return callback(err || body)
-            }
-            callback(null, body)
-        })
+    makeRequest(method, uri) {
+        return this
+            .fetch(this.baseURL + uri + "?api_key=" + this.token, {'method': method})
+            .then(res => res.json())
     }
 }
 module.exports = MovieData

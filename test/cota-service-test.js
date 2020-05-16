@@ -27,9 +27,11 @@ else {
 }
 
 
+const nodefetch = require('node-fetch')
 const expect = require('chai').expect
+
 const movieDataAPI = require('../data/movie-database-data-mock').init()
-const cotaDB = require(dbPath).init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX)
+const cotaDB = require(dbPath).init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX, nodefetch)
 const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB)
 
 describe('CotaService test API for Group', () => {
@@ -59,111 +61,139 @@ describe('CotaService test API for Group', () => {
         groupIDs = [] // clean
     })
 
-    it('Should create a group', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            expect(res._id).to.be.a('string')
-            expect(res.name).to.eql(groupToAdd.name)
-            expect(res.description).to.eql(groupToAdd.description)
-            expect(res).to.have.a.property('series')
-            groupIDs[0] = res._id
-            done()
-        })
-    })
-
-    it('Should edit a group', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            const groupID = res._id
-            groupIDs[0] = groupID
-            cotaServices.editGroup(groupID, groupEdited.name, groupEdited.description, (err, res) => {
-                expect(res._id).to.eql(groupID)
-                expect(res.name).to.eql(groupEdited.name)
-                expect(res.description).to.eql(groupEdited.description)
+    it('Should create a group', () => {
+        return cotaServices
+            .createGroup(groupToAdd.name, groupToAdd.description)
+            .then(res => {
+                expect(res._id).to.be.a('string')
+                expect(res.name).to.eql(groupToAdd.name)
+                expect(res.description).to.eql(groupToAdd.description)
                 expect(res).to.have.a.property('series')
-                done()
+                groupIDs[0] = res._id
             })
-        })
     })
 
-    it('Should add a serie to a group', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            groupIDs[0] = res._id
-            cotaServices.addSeriesToGroup(groupIDs[0], serieToAdd.id, (err, res) => {
+    it('Should edit a group', () => {
+        return cotaServices
+            .createGroup(groupToAdd.name, groupToAdd.description)
+            .then(res => {
+                const groupID = res._id
+                groupIDs[0] = groupID
+                return Promise.all([
+                    groupID,
+                    groupEdited.name,
+                    groupEdited.description,
+                    cotaServices.editGroup(groupID, groupEdited.name, groupEdited.description)
+                ])
+            })
+            .then(([groupID, name, description, res]) => {
+                expect(res._id).to.eql(groupID)
+                expect(res.name).to.eql(name)
+                expect(res.description).to.eql(description)
+                expect(res).to.have.a.property('series')
+            })
+    })
+
+    it('Should add a serie to a group', () => {
+        return cotaServices
+            .createGroup(groupToAdd.name, groupToAdd.description)
+            .then(res => {
+                groupIDs[0] = res._id
+                return cotaServices.addSeriesToGroup(groupIDs[0], serieToAdd.id)
+            })
+            .then(res => {
                 const series = res.series[res.series.length - 1]
                 expect(series.id).to.eql(serieToAdd.id)
                 expect(series.name).to.be.a('string')
-                done()
             })
-        })
     })
 
-    it('Should get all groups', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            groupIDs[0] = res._id
-            cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
+    it('Should get all groups', () => {
+        return cotaServices
+            .createGroup(groupToAdd.name, groupToAdd.description)
+            .then(res => {
+                groupIDs[0] = res._id
+                return cotaServices.createGroup(groupToAdd.name, groupToAdd.description)
+                
+            })
+            .then(res => {
                 groupIDs[1] = res._id
-                cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-                    groupIDs[2] = res._id
-                    cotaServices.getAllGroups((err, res) => {
-                        res.forEach(function(group) {
-                            expect(group._id).to.be.a('string')
-                            expect(group.name).to.exist
-                            expect(group.description).to.exist
-                            expect(group.series).to.exist
-                        })
-                        done()
-                    })
+                return cotaServices.createGroup(groupToAdd.name, groupToAdd.description)
+            })
+            .then(res => {
+                groupIDs[2] = res._id
+                return cotaServices.getAllGroups()
+            })
+            .then(res => {
+                res.forEach(group => {
+                    expect(group._id).to.be.a('string')
+                    expect(group.name).to.exist
+                    expect(group.description).to.exist
+                    expect(group.series).to.exist
                 })
             })
-        })
     })
 
-    it('Should get a group', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            groupIDs[0] = res._id
-            cotaServices.getGroup(groupIDs[0], (err, res) => {
+    it('Should get a group', () => {
+        return cotaServices
+            .createGroup(groupToAdd.name, groupToAdd.description)
+            .then(res => {
+                groupIDs[0] = res._id
+                return cotaServices.getGroup(groupIDs[0])
+            })
+            .then(res => {
                 expect(res._id).to.be.a('string')
                 expect(res.name).to.exist
                 expect(res.description).to.exist
                 expect(res).to.have.a.property('series')
-                done()
             })
-        })
     })
 
-    it('Should get sorted and filtered series for a group', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
-            const groupID = res._id
-            groupIDs[0] = groupID
-            cotaServices.addSeriesToGroup(groupID, serieToAdd.id, (err, res) => {
-                cotaServices.getSeriesSorted(groupID, min, max, (err, res) => {
-                    let lastVote = -1
-                    res.forEach(function(series) {
-                        if(lastVote == -1)
-                            lastVote = series.vote_average
-                        expect(series.id).to.be.a('number')
-                        expect(series.name).to.be.a('string')
-                        expect(series.popularity).to.be.a('number')
-                        expect(series.vote_average).to.be.at.most(lastVote)
-                        expect(series.vote_average).to.be.at.most(parseFloat(max))
-                        expect(series.vote_average).to.be.at.least(parseFloat(min))
-                    })
-                    done()
+    it('Should get sorted and filtered series for a group', () => {
+        return cotaServices
+            .createGroup(groupToAdd.name, groupToAdd.description)
+            .then(res => {
+                const groupID = res._id
+                groupIDs[0] = groupID
+                return Promise.all([
+                    groupID, 
+                    cotaServices.addSeriesToGroup(groupID, serieToAdd.id)
+                ])
+            })
+            .then(([groupID, res]) => {
+                return cotaServices.getSeriesSorted(groupID, min, max)  
+            })
+            .then(res => {
+                let lastVote = -1
+                res.forEach(series => {
+                    if(lastVote == -1)
+                        lastVote = series.vote_average
+                    expect(series.id).to.be.a('number')
+                    expect(series.name).to.be.a('string')
+                    expect(series.popularity).to.be.a('number')
+                    expect(series.vote_average).to.be.at.most(lastVote)
+                    expect(series.vote_average).to.be.at.most(parseFloat(max))
+                    expect(series.vote_average).to.be.at.least(parseFloat(min))
                 })
             })
-        })
     })
 
-    it('Should remove a series from a group', done => {
-        cotaServices.createGroup(groupToAdd.name, groupToAdd.description, (err, res) => {
+    it('Should remove a series from a group', () => {
+        return cotaServices.createGroup(groupToAdd.name, groupToAdd.description)
+        .then(res => {
             const groupID = res._id
             groupIDs[0] = groupID
-            cotaServices.addSeriesToGroup(groupID, serieToAdd.id, (err, res) => {
-                cotaServices.removeSeriesFromGroup(groupID, serieToAdd.id, (err, res) => {
-                    res.series.forEach(function(series) {
-                        expect(series.id).to.not.eql(serieToAdd.id)
-                    })
-                    done()
-                })
+            return Promise.all([
+                groupID,
+                cotaServices.addSeriesToGroup(groupID, serieToAdd.id)
+            ])
+        })
+        .then(([groupID, res]) => {
+            return cotaServices.removeSeriesFromGroup(groupID, serieToAdd.id)
+        })
+        .then(res => {
+            res.series.forEach(series => {
+                expect(series.id).to.not.eql(serieToAdd.id)
             })
         })
     })
