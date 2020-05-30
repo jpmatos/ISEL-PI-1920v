@@ -28,6 +28,11 @@ Object.assign(process.env, env)
 const express = require('express')
 const nodefetch = require('node-fetch')
 
+//Require webpack
+const webpackConfig = require('./webpack.config.js')
+const webpack = require('webpack')
+const webpackMiddleware = require('webpack-dev-middleware')
+
 //Require project files
 const webApi = require('./web-api/cota-web-api')
 const bodyParser = require('./middleware/body-parser')
@@ -40,9 +45,13 @@ const groupController = require('./web-api/controller/group-controller').init(co
 //Initialize express
 const app = express()
 
-//Set middleware and routes
+
+// Middleware
+app.use(webpackMiddleware(webpack(webpackConfig)))
 app.use(bodyParser)
-app.use('/', webApi(express.Router(), cotaController, groupController))
+
+//Set routes
+app.use('/api', webApi(express.Router(), cotaController, groupController))
 
 //Start server
 app.listen(process.env.PORT, () => 

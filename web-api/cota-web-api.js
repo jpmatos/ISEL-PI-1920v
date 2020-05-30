@@ -1,7 +1,7 @@
 'use strict'
 
-function setRouter(router, cotaController, groupController){
-    router.get('/', (req, res, next) => cotaController.home(req, res, next))
+function setRouter(router, cotaController, groupController) {
+    // router.get('/', (req, res, next) => cotaController.home(req, res, next))
     router.get('/popular', (req, res, next) => cotaController.popular(req, res, next))
     router.get('/tv/:seriesID', (req, res, next) => cotaController.searchSeries(req, res, next))
 
@@ -12,7 +12,7 @@ function setRouter(router, cotaController, groupController){
     router.put('/groups/:groupID/series/:seriesID', (req, res, next) => groupController.addSeries(req, res, next))
     router.delete('/groups/:groupID/series/:seriesID', (req, res, next) => groupController.removeSeries(req, res, next))
     router.get('/groups/:groupID/series', (req, res, next) => groupController.getSeries(req, res, next))
-    
+
     return router
 }
 module.exports = setRouter
