@@ -1,0 +1,24 @@
+{{#if series}}
+<table class="table text-center">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Popularity</th>
+            <th scope="col">Vote Average</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="https://www.themoviedb.org/tv/{{series.id}}">{{series.id}}</a></td>
+            <td>{{series.name}}</td>
+            <td>{{series.popularity}}</td>
+            <td>{{series.vote_average}}</td>
+        </tr>
+    </tbody>
+</table>
+{{else}}
+<div class="card text-center bg-warning">
+    <p class="card-text ">No series found</p>
+</div>
+{{/if}}

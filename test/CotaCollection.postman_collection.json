@@ -47,9 +47,9 @@
 							"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
 						},
 						"url": {
-							"raw": "{{BASE_URL}}/groups",
+							"raw": "{{BASE_API_URL}}/groups",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups"
@@ -84,9 +84,9 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie1}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
@@ -123,9 +123,9 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie2}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie2}}",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
@@ -162,9 +162,9 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie3}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie3}}",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
@@ -201,9 +201,9 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie4}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie4}}",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
@@ -240,9 +240,9 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie5}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie5}}",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
@@ -282,9 +282,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/groups/{{groupID}}/series?min={{min}}&max={{max}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series?min={{min}}&max={{max}}",
 							"host": [
-								"{{BASE_URL}}"
+								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
@@ -335,9 +335,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/popular",
+					"raw": "{{BASE_API_URL}}/popular",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"popular"
@@ -369,9 +369,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/tv/{{serie1}}",
+					"raw": "{{BASE_API_URL}}/tv/{{serie1}}",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"tv",
@@ -419,9 +419,9 @@
 					"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
 				},
 				"url": {
-					"raw": "{{BASE_URL}}/groups",
+					"raw": "{{BASE_API_URL}}/groups",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"groups"
@@ -465,9 +465,9 @@
 					"raw": "{\n\t\"description\": \"DescriptionEdited\"\n}"
 				},
 				"url": {
-					"raw": "{{BASE_URL}}/groups/{{groupID}}",
+					"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"groups",
@@ -503,9 +503,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/groups",
+					"raw": "{{BASE_API_URL}}/groups",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"groups"
@@ -538,9 +538,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/groups/{{groupID}}",
+					"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"groups",
@@ -575,9 +575,9 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie1}}",
+					"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"groups",
@@ -612,9 +612,9 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{BASE_URL}}/groups/{{groupID}}/series/{{serie1}}",
+					"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
 					"host": [
-						"{{BASE_URL}}"
+						"{{BASE_API_URL}}"
 					],
 					"path": [
 						"groups",
@@ -651,9 +651,9 @@
 	],
 	"variable": [
 		{
-			"id": "093e414d-b819-4f2c-a91d-95c5d442fbdf",
-			"key": "BASE_URL",
-			"value": "http://localhost:8000",
+			"id": "4cbcd467-c250-4c0f-9b56-5fbdef6d8ccf",
+			"key": "BASE_API_URL",
+			"value": "http://localhost:8000/api",
 			"type": "string"
 		}
 	],

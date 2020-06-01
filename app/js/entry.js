@@ -8,6 +8,7 @@ const Handlebars = require('handlebars')
 //Require front-end JS and HashRouter
 const home = require('./home')
 const popular = require('./popular')
+const series = require('./series')
 const Router = require('./hashRouter')
 
 //Load main, navbar, and notFound views
@@ -27,6 +28,7 @@ insertNavbar()
 const router = new Router()
     .use('#home', () => home(divMain))
     .use('#popular', () => popular(divMain))
+    .use('#series', (id) => series(divMain, id))
     .fallback(() => divMain.innerHTML = resourceNotFoundView({'message': 'Resource not found'}))
     .resourceId(fragment => fragment.split('/')[1])
     .hash(fragment => fragment.split('/')[0])
