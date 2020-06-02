@@ -48,11 +48,6 @@ class CotaServices {
     }
 
     createGroup(name, desc){
-        // if(!name || !desc)
-        //     return cb(null, {'message': 'Must provide name and description to create a group'})
-        // if(!/^[A-Za-z0-9]+$/.test(name) || !/^[A-Za-z0-9]+$/.test(desc))
-        //     return cb(null, {'message': 'Must provide name and description with no special chars'})
-
         const group = {'name': name, 'description': desc, 'series': []}
         return this.db.create(group)
             .then(groupRes => {
@@ -69,12 +64,6 @@ class CotaServices {
     }
 
     editGroup(id, name, desc) {
-        // if(!name && !desc)
-        //     return cb(null, {'message': 'Must provide name or description to update a group'})
-        // if(!/^[A-Za-z0-9]+$/.test(name) || !/^[A-Za-z0-9]+$/.test(desc)) {
-        //     return cb(null, {'message': 'Must provide name and description with no special chars'})
-        // }
-
         const updatedGroup = {}
         if(name) 
             updatedGroup.name = name
@@ -88,6 +77,18 @@ class CotaServices {
                     'name': groupRes.get._source.name,
                     'description': groupRes.get._source.description,
                     'series': groupRes.get._source.series
+                }
+            })
+            .catch(err => {
+                console.debug(err)
+            })
+    }
+
+    deleteGroup(groupID){
+        return this.db.delete(groupID)
+            .then(groupRes => {
+                return {
+                    'message': `Sucessfully deleted group '${groupRes._id}'`
                 }
             })
             .catch(err => {
@@ -114,7 +115,7 @@ class CotaServices {
             })
     }
 
-    getGroup(groupID, cb){
+    getGroup(groupID){
         return this.db.findByID(groupID)
             .then(groupData => {
                 const group = {
@@ -238,23 +239,5 @@ class CotaServices {
                 console.debug(err)
             })
     }
-
-    // static parallel(tasks, callback) {
-    //     const results = []
-    //     let counter = 0
-    
-    //     tasks.forEach((task, index) => {
-    //         task((err, result) => {
-    //             if(err)
-    //                 return callback(err)
-    
-    //             counter++
-    //             results[index] = result
-    
-    //             if(counter == tasks.length)
-    //                 callback(null, results)
-    //         })
-    //     })
-    // }
 }
 module.exports = CotaServices

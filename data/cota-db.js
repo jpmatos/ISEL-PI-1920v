@@ -21,7 +21,7 @@ class CotaDB{
     }
 
     delete(id){
-        return this.makeRequest('DELETE', `${this.index}/_update/${id}`)
+        return this.makeRequest('DELETE', `${this.index}/_doc/${id}`)
     }
 
     getAll(){

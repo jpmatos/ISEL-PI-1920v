@@ -8,6 +8,7 @@ function setRouter(router, cotaController, groupController) {
     router.post('/groups', (req, res, next) => groupController.create(req, res, next))
     router.put('/groups/:groupID', (req, res, next) => groupController.edit(req, res, next))
     router.get('/groups', (req, res, next) => groupController.getAll(req, res, next))
+    router.delete('/groups/:groupID', (req, res, next) => groupController.delete(req, res, next))
     router.get('/groups/:groupID', (req, res, next) => groupController.getSingle(req, res, next))
     router.put('/groups/:groupID/series/:seriesID', (req, res, next) => groupController.addSeries(req, res, next))
     router.delete('/groups/:groupID/series/:seriesID', (req, res, next) => groupController.removeSeries(req, res, next))

@@ -1,0 +1,14 @@
+{{#if groups}}
+<select class="form-control" id="selectGroupId">
+    <option value="" disabled selected> -- Select group -- </option>
+    {{#each groups}}
+    <option value="{{_id}}">
+        {{name}}
+    </option>
+    {{/each}}
+</select>
+{{else}}
+<div class="card text-center bg-warning">
+    <p class="card-text ">No groups found</p>
+</div>
+{{/if}}

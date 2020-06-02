@@ -1,0 +1,59 @@
+{{#if group}}
+<div id="divGroupDetail">
+    <br>
+    <div class="card text-center">
+        <div class="card-header">
+            {{group.name}}
+            <button id="btnDeleteGroup" type="submit" class="btn btn-danger mb-2">Delete</button>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>{{group.description}}</p>
+            </blockquote>
+        </div>
+    </div>
+    {{#if group.series}}
+    <div id="divSeriesTable">
+        <br>
+        <table class="table table-striped text-center">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                </tr>
+            </thead>
+            <tbody id="seriesTableBody">
+                {{#each group.series}}
+                <tr id="Series_{{id}}">
+                    <td>{{id}}</td>
+                    <td>{{name}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div id="divSeriesNotFound">
+        <br>
+        <div class="card text-center bg-warning">
+            <p class="card-text ">No series found</p>
+        </div>
+        <br>
+    </div>
+    {{/if}}
+</div>
+
+<form id="seriesForm" class="form-inline">
+    <div class="form-group mx-sm-3 mb-2">
+        <input id="txtSeriesId" type="text" name="SeriesId" class="form-control text-center" placeholder="series id">
+    </div>
+    <button id="btnAddSeriesToGroup" type="submit" class="btn btn-success mb-2">Add Series</button>
+    {{#if group.series}}
+    <button id="btnDeleteSeriesFromGroup" type="submit" class="btn btn-danger mb-2">Remove Series</button>
+    {{/if}}
+</form>
+{{else}}
+<div class="card text-center bg-warning">
+    <p class="card-text ">No groups found</p>
+</div>
+{{/if}}

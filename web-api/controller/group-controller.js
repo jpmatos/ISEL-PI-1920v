@@ -24,6 +24,13 @@ class GroupController{
             .catch(next)
     }
 
+    delete(req, res, next) {
+        this.service
+            .deleteGroup(req.params.groupID)
+            .then(group => res.status(200).json(group))
+            .catch(next)
+    }
+
     getAll(req, res, next){
         this.service
             .getAllGroups()
