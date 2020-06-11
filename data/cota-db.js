@@ -32,6 +32,10 @@ class CotaDB{
         return this.makeRequest('GET', `${this.index}/_doc/${id}`)
     }
 
+    search(query){
+        return this.makeRequest('GET', `${this.index}/_search?q=${query}`)
+    }
+
     resetID(){
 
     }

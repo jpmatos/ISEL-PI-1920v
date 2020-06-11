@@ -2,30 +2,30 @@
 
 class CotaController {
     
-    constructor(cotaService){
-        this.cotaService = cotaService
+    constructor(service){
+        this.service = service
     }
 
-    static init(cotaService){
-        return new CotaController(cotaService)
+    static init(service){
+        return new CotaController(service)
     }
 
-    home(req, res, next){
-        res.writeHead(200, {
-            'Content-Type' : 'text/plain'
-        })
-        res.end('Hello World!')
-    }
+    // home(req, res, next){
+    //     res.writeHead(200, {
+    //         'Content-Type' : 'text/plain'
+    //     })
+    //     res.end('Hello World!')
+    // }
 
     popular(req, res, next){
-        this.cotaService
+        this.service
             .getPopular()
             .then(movies => res.status(200).json(movies))
             .catch(next)
     }
 
     searchSeries(req, res, next){
-        this.cotaService
+        this.service
             .searchSeries(req.params.seriesID)
             .then(series => res.status(200).json(series))
             .catch(next)
