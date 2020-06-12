@@ -25,5 +25,17 @@
                 Sort
             </a>
         </li>
+        <li class="nav-item" id="liAuth">
+            {{#if session.isAuthenticated}}
+                <a id="nav#logout" href="#logout" class="nav-link">{{session.user.username}}</a>
+            {{else}}
+                <a id="nav#login" href="#login" class="nav-link">Login</a>
+            {{/if}}
+        </li>
+        {{!-- {{#if session.isAuthenticated}}
+            <span class="navbar-text">
+                {{session.user.username}}
+            </span>
+        {{/if}} --}}
     </ul>
 </nav>

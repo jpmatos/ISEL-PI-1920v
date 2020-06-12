@@ -1,10 +1,20 @@
 'use strict'
 
+const Handlebars = require('handlebars')
+const alertView = Handlebars.compile(require('./../views/alert.hbs').default)
+
 module.exports = {
+    showAlert,
     getJSON,
     postJSON,
     putJSON,
     deleteJSON
+}
+
+function showAlert(message, type = 'danger') {
+    document
+        .getElementById('divAlerts')
+        .insertAdjacentHTML('beforeend', alertView({type, message}))
 }
 
 //Fetch and decode JSON

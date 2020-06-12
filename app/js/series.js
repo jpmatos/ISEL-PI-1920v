@@ -5,7 +5,7 @@ const Handlebars = require('handlebars')
 const seriesList = require('./../views/seriesList.hbs').default
 const seriesSelection = require('./../views/seriesSelection.html')
 
-module.exports = (divMain, leagueID) => {
+module.exports = (divMain) => {
     const baseUrl = `/api/tv`
 
     const seriesListView = Handlebars.compile(seriesList)

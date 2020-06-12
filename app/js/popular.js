@@ -4,7 +4,7 @@ const util = require('./util.js')
 const popularList = require('./../views/popularList.hbs').default
 const Handlebars = require('handlebars')
 
-module.exports = async (divMain) => {
+module.exports = (divMain) => {
     const url = `/api/popular`
     const popularListView = Handlebars.compile(popularList)
 

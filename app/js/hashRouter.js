@@ -1,5 +1,7 @@
 'use strict'
 
+const util = require('./util.js')
+
 module.exports = class HashRouter {
     
     constructor(){
@@ -13,8 +15,13 @@ module.exports = class HashRouter {
      * @param {string} hash 
      * @param {function} callback 
      */
-    use(hash, callback){
-        this.routes.push({hash, callback})
+    use(hash, callback, requiresAuth = false){
+        this.routes.push({hash, callback, requiresAuth})
+        return this
+    }
+
+    noAuth(callback){
+        this.noAuth = callback
         return this
     }
 
@@ -56,11 +63,18 @@ module.exports = class HashRouter {
      * @param {*} fragment 
      */
     findMatch(fragment){
-        for(let route of this.routes){
-            if(route.hash == this.hashSelector(fragment)){
-                return route.callback(this.resourceIdSelector(fragment))
-            }
-        }
-        this.fallback(fragment)
+        util.getJSON('/auth/session')
+            .catch(err => util.showAlert('Fetch /auth/session: ' + JSON.stringify(err)))
+            .then(session => {
+                for(let route of this.routes){
+                    if(route.hash == this.hashSelector(fragment)){
+                        if(route.requiresAuth == true && !session.isAuthenticated)
+                            return this.noAuth(fragment)
+                        else
+                            return route.callback(this.resourceIdSelector(fragment))
+                    }
+                }
+                this.fallback(fragment)
+            })
     }
 }

@@ -51,6 +51,7 @@ class AuthController{
         if(!req.isAuthenticated())
             return next(boom.badRequest('Not authenticated'))
         req.logout();
+        res.json(req.user)
         res.end();
     }
 }

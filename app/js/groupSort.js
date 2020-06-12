@@ -6,7 +6,7 @@ const groupSortSearch = require('./../views/groupSortSearch.hbs').default
 const groupSelection = require('./../views/groupSelection.hbs').default
 const util = require('./util.js')
 
-module.exports = (divMain, groupID) => {
+module.exports = (divMain) => {
     const baseUrl = '/api/groups/'
 
     const groupSelectionView = Handlebars.compile(groupSelection)
