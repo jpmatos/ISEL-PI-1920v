@@ -1,25 +1,39 @@
 'use strict'
 
 class AuthServices{
-    constructor(db){
+    constructor(db, boom){
         this.db = db
+        this.boom = boom
     }
 
-    static init(db){
-        return new AuthServices(db)
+    static init(db, boom){
+        return new AuthServices(db, boom)
+    }
+
+    verify(username, password){
+        return this.getUserData(username)
+            .catch(err => {
+                if(err.statusCode == 404)
+                    return false // User does not exist
+                throw this.boom.internal('Failed to load user from the database', err)
+            })
+            .then(user => {
+                if (user == null)
+                    return false
+                return user.password == password
+            })
     }
 
     registerUser(username, password){
         return this.existsUser(username)
+            .catch(err => {
+                throw this.boom.internal('Failed to load user data from the database', err)
+            })
             .then(exists => {
                 if(!exists){
-                    const user = this.createUser(username, password)
-                    return user
+                    return this.createUser(username, password)
                 }
-                return Promise.resolve({'message': 'User already exists'})
-            })
-            .catch(err => {
-                console.log(err)
+                return Promise.reject(this.boom.badRequest('A user with the same username already exists'))
             })
     }
 
@@ -28,14 +42,14 @@ class AuthServices{
             'username': username,
             'password': password
         })
+        .catch(err => {
+            throw this.boom.internal('Error creating user', err)
+        })
         .then(result => {
             return {
-                'username': username,
-                'password': password
+                '_id': result._id,
+                'username': username
             }
-        })
-        .catch(err => {
-            console.log(err)
         })
     }
 
@@ -61,6 +75,14 @@ class AuthServices{
                     ...userData._source
                 }
             })
+    }
+
+    getUserById(id){
+        return this.db.findByID(id)
+            .then(result => ({
+                '_id': result._id,
+                ...result._source
+            }))
     }
 }
 module.exports = AuthServices

@@ -27,9 +27,12 @@
   },
   "homepage": "https://github.com/jpmatos/PI-1920v-LI51N-G08#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "boom": "^7.3.0",
     "bootstrap": "^4.5.0",
     "css-loader": "^3.5.3",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "handlebars": "^4.7.6",
     "html-loader": "^1.1.0",
     "jquery": "^3.5.1",
