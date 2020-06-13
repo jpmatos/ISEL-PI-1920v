@@ -49,10 +49,24 @@ class AuthController{
 
     logout(req, res, next){
         if(!req.isAuthenticated())
-            return next(boom.badRequest('Not authenticated'))
-        req.logout();
+            return next(this.boom.badRequest('Not authenticated'))
+        req.logout()
         res.json(req.user)
-        res.end();
+        res.end()
+    }
+
+    delete(req, res, next){
+        if(!req.isAuthenticated())
+            return next(this.boom.badRequest('Not authenticated'))
+        if(req.params.userID != req.user._id)
+            return next(this.boom.badRequest('Wrong user'))
+
+        this.service.deleteUser(req.user._id)
+            .then(message => {
+                req.logout()
+                res.json(message)
+            })
+            .catch(next)
     }
 }
 module.exports = AuthController

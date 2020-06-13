@@ -27,7 +27,7 @@ class CotaServices {
                 return movies
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error getting popular movies', err)
             })
     }
 
@@ -44,7 +44,7 @@ class CotaServices {
                 return seriesRes
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error searching for series', err)
             })
     }
 
@@ -106,7 +106,7 @@ class CotaServices {
             })
             .then(groupRes => {
                 return {
-                    'message': `Sucessfully deleted group '${groupRes._id}'`
+                    'message': `Successfully deleted group '${groupRes._id}'`
                 }
             })
             .catch(err => {
@@ -129,14 +129,14 @@ class CotaServices {
                 return groups
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error getting all groups', err)
             })
     }
 
     getGroup(groupID, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {
-                if(groupData.owner != ownerID)
+                if(groupData._source.owner != ownerID)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions'))
                     
                 const group = {
@@ -148,7 +148,7 @@ class CotaServices {
                 return group
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error creating group', err)
             })
     }
 
@@ -194,11 +194,11 @@ class CotaServices {
                         }
                     })
                     .catch(err => {
-                        console.debug(err)
+                        this.boom.internal('Error updating group', err)
                     })
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error adding series to group', err)
             })
     }
 
@@ -223,11 +223,11 @@ class CotaServices {
                         }
                     })
                     .catch(err => {
-                        console.debug(err)
+                        this.boom.internal('Error updating group', err)
                     })
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error removing series from group', err)
             })
     }
 
@@ -262,11 +262,11 @@ class CotaServices {
                         return series
                     })
                     .catch(err => {
-                        console.debug(err)
+                        this.boom.internal('Error getting series', err)
                     })
             })
             .catch(err => {
-                console.debug(err)
+                this.boom.internal('Error getting series sorted', err)
             })
     }
 }

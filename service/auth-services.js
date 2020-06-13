@@ -22,18 +22,21 @@ class AuthServices{
                     return false
                 return user.password == password
             })
+            .catch(err => {
+                throw this.boom.internal('Failed to verify user', err)
+            })
     }
 
     registerUser(username, password){
         return this.existsUser(username)
-            .catch(err => {
-                throw this.boom.internal('Failed to load user data from the database', err)
-            })
             .then(exists => {
                 if(!exists){
                     return this.createUser(username, password)
                 }
                 return Promise.reject(this.boom.badRequest('A user with the same username already exists'))
+            })
+            .catch(err => {
+                throw this.boom.internal('Failed to register user', err)
             })
     }
 
@@ -42,14 +45,14 @@ class AuthServices{
             'username': username,
             'password': password
         })
-        .catch(err => {
-            throw this.boom.internal('Error creating user', err)
-        })
         .then(result => {
             return {
                 '_id': result._id,
                 'username': username
             }
+        })
+        .catch(err => {
+            throw this.boom.internal('Failed to create user', err)
         })
     }
 
@@ -60,6 +63,9 @@ class AuthServices{
                 if(err.statusCode == 404)
                     return false
                 throw err
+            })
+            .catch(err => {
+                throw this.boom.internal('Failed check if user exists', err)
             })
     }
 
@@ -75,6 +81,9 @@ class AuthServices{
                     ...userData._source
                 }
             })
+            .catch(err => {
+                throw this.boom.internal('Failed to get user data', err)
+            })
     }
 
     getUserById(id){
@@ -83,6 +92,21 @@ class AuthServices{
                 '_id': result._id,
                 ...result._source
             }))
+            .catch(err => {
+                throw this.boom.internal('Failed to get user by Id', err)
+            })
+    }
+
+    deleteUser(id){
+        return this.db.delete(id)
+            .then(result => {
+                return {
+                    'message': `Successfully deleted user`
+                }
+            })
+            .catch(err => {
+                throw this.boom.internal('Failed to delete user', err)
+            })
     }
 }
 module.exports = AuthServices
