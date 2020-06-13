@@ -4,7 +4,6 @@
 require('./../../node_modules/bootstrap/dist/css/bootstrap.css')
 require('./../../node_modules/bootstrap/dist/js/bootstrap')
 const Handlebars = require('handlebars')
-const util = require('./util.js')
 
 //Require front-end JS and HashRouter
 const home = require('./home')
@@ -15,7 +14,8 @@ const groupDetails = require('./groupDetails')
 const groupSort = require('./groupSort')
 const login = require('./login')
 const logout = require('./logout')
-const Router = require('./hashRouter')
+const sessionHolder = require('./sessionHolder').init()
+const router = require('./hashRouter').init(sessionHolder)
 
 //Load main, navbar, and notFound views
 const mainView = require('./../views/main.html')
@@ -28,18 +28,18 @@ const divMain = document.getElementById('divMain')
 const divNavbar = document.getElementById('divNavbar')
 
 //Initial setup of navbar
-getAuthAndInsertNavbar()
+getAuthAndInsertNavbar(sessionHolder)
 
-//Set Router's hash paths
-const router = new Router()
+//Set Router's hash paths and others
+router
     .use('#home', () => home(divMain))
     .use('#popular', () => popular(divMain))
     .use('#series', (id) => series(divMain, id))
     .use('#groups', () => groups(divMain), true)
     .use('#group', (id) => groupDetails(divMain, id), true)
     .use('#groupSort', (id) => groupSort(divMain), true)
-    .use('#login', () => login(divMain, getAuthAndInsertNavbar))
-    .use('#logout', () => logout(divMain, getAuthAndInsertNavbar))
+    .use('#login', () => login(divMain, getAuthAndInsertNavbar, sessionHolder))
+    .use('#logout', () => logout(divMain, getAuthAndInsertNavbar, sessionHolder))
     .noAuth(() => divMain.innerHTML = resourceNotFoundView({'message': 'Authentication Required'}))
     .fallback(() => divMain.innerHTML = resourceNotFoundView({'message': 'Resource Not Found'}))
     .resourceId(fragment => fragment.split('/')[1])
@@ -52,11 +52,6 @@ window.onload = onHashUpdateHandler
 
 //Auto-forward to the homepage
 if(!window.location.hash) window.location.hash = "home"
-
-
-// function insertNavbar() {
-//     divNavbar.innerHTML = navView()
-// }
 
 function onHashUpdateHandler(){
     router.trigger(),
@@ -74,11 +69,10 @@ function updateNav() {
     if(option) option.classList.add('active')
 }
 
-function getAuthAndInsertNavbar() {
-    util.getJSON('/auth/session')
-        .catch(err => util.showAlert('Fetch /auth/session: ' + JSON.stringify(err)))
+function getAuthAndInsertNavbar(sessionHolder) {
+    sessionHolder.getSession()
         .then(session => {
-            divNavbar.innerHTML = navView({session})
+            divNavbar.innerHTML = navView({ session })
             updateNav()
         })
 }

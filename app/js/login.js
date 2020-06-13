@@ -3,7 +3,7 @@
 const login = require('./../views/login.html')
 const util = require('./util.js')
 
-module.exports = (divMain, updateNavbar) => {
+module.exports = (divMain, updateNavbar, sessionHolder) => {
     divMain.innerHTML = login
 
     document
@@ -36,13 +36,16 @@ module.exports = (divMain, updateNavbar) => {
         const password = document.getElementById('inputPassword').value
         util.postJSON('/auth/login', {username, password})
             .then(body => {
-                if(body.error){
-                    util.showAlert(body.message)
-                }
-                else {
-                    updateNavbar()
-                    window.location.hash = 'logout'
-                }
+                sessionHolder.updateSession()
+                    .then(() => {
+                        if(body.error){
+                            util.showAlert(body.message)
+                        }
+                        else {
+                            updateNavbar(sessionHolder)
+                            window.location.hash = 'logout'
+                        }
+                    })
             })
             .catch(console.log)
     }

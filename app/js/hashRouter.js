@@ -1,13 +1,16 @@
 'use strict'
 
-const util = require('./util.js')
-
-module.exports = class HashRouter {
+class HashRouter {
     
-    constructor(){
+    constructor(sessionHolder){
+        this.sessionHolder = sessionHolder
         this.routes = []
         this.resourceIdSelector = el => el
         this.hashSelector = el => el
+    }
+
+    static init(sessionHolder){
+        return new HashRouter(sessionHolder)
     }
 
     /**
@@ -63,8 +66,7 @@ module.exports = class HashRouter {
      * @param {*} fragment 
      */
     findMatch(fragment){
-        util.getJSON('/auth/session')
-            .catch(err => util.showAlert('Fetch /auth/session: ' + JSON.stringify(err)))
+        this.sessionHolder.getSession()
             .then(session => {
                 for(let route of this.routes){
                     if(route.hash == this.hashSelector(fragment)){
@@ -78,3 +80,4 @@ module.exports = class HashRouter {
             })
     }
 }
+module.exports = HashRouter

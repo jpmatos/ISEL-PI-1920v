@@ -3,7 +3,7 @@
 const logout = require('./../views/logout.html')
 const util = require('./util.js')
 
-module.exports = (divMain, updateNavbar) => {
+module.exports = (divMain, updateNavbar, sessionHolder) => {
     divMain.innerHTML = logout
 
     document
@@ -14,7 +14,10 @@ module.exports = (divMain, updateNavbar) => {
         ev.preventDefault()
         util.postJSON('/auth/logout')
             .then(body => {
-                updateNavbar()
+                return sessionHolder.updateSession()
+            })
+            .then (() => {
+                updateNavbar(sessionHolder)
                 window.location.hash = 'login'
             })
             .catch(console.log)
