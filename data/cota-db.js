@@ -17,15 +17,15 @@ class CotaDB{
     }
 
     update(id, document) {
-        return this.makeRequest('POST', `${this.index}/_update/${id}?_source`, { 'doc': document})
+        return this.makeRequest('POST', `${this.index}/_update/${id}?_source`, { 'doc': document })
     }
 
     delete(id){
         return this.makeRequest('DELETE', `${this.index}/_doc/${id}`)
     }
 
-    getAll(){
-        return this.makeRequest('GET', `${this.index}/_search`)
+    getAll(ownerID){
+        return this.makeRequest('GET', `${this.index}/_search?q=owner:${ownerID}`)
     }
 
     findByID(id){

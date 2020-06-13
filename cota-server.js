@@ -43,7 +43,7 @@ const authApi = require('./web-api/auth-web-api')
 const movieDataAPI = require(movieDataAPIPath).init(process.env.BASE_URL, process.env.MOVIE_API_TOKEN, nodefetch)
 const cotaDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX, nodefetch)
 const authDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_USERS_INDEX, nodefetch)
-const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB)
+const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB, boom)
 const authServices = require('./service/auth-services').init(authDB, boom)
 const cotaController = require('./web-api/controller/cota-controller').init(cotaServices)
 const groupController = require('./web-api/controller/group-controller').init(cotaServices)
@@ -69,8 +69,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(expressSession({
   // name: 'session_id',
-  secret: '21313213dsadsadsa'
-  // resave: false,
+  secret: '21313213dsadsadsa',
+  resave: false,
   // saveUninitialized: true
 }))
 app.use(passport.initialize());

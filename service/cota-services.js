@@ -2,13 +2,14 @@
 
 class CotaServices {
 
-    constructor(movieAPI, db){
+    constructor(movieAPI, db, boom){
         this.movieAPI = movieAPI
         this.db = db
+        this.boom = boom
     }
 
-    static init (movieAPI, db){
-        return new CotaServices(movieAPI, db)
+    static init (movieAPI, db, boom){
+        return new CotaServices(movieAPI, db, boom)
     }
 
     getPopular(){
@@ -47,8 +48,13 @@ class CotaServices {
             })
     }
 
-    createGroup(name, desc){
-        const group = {'name': name, 'description': desc, 'series': []}
+    createGroup(name, desc, ownerID){
+        const group = {
+            'owner': ownerID,
+            'name': name, 
+            'description': desc, 
+            'series': []
+        }
         return this.db.create(group)
             .then(groupRes => {
                 return {
@@ -59,18 +65,24 @@ class CotaServices {
                 }
             })
             .catch(err => {
-                console.debug(err)
+                throw this.boom.internal('Failed to create group', err)
             })
     }
 
-    editGroup(id, name, desc) {
+    editGroup(id, name, desc, ownerID) {
         const updatedGroup = {}
         if(name) 
             updatedGroup.name = name
         if(desc) 
             updatedGroup.description = desc
 
-        return this.db.update(id, updatedGroup)
+        return this.db.findByID(id)
+            .then(group => {
+                if(group._source.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions to edit group'))
+
+                return this.db.update(id, updatedGroup)
+            }) 
             .then(groupRes => {      
                 return {
                     '_id': groupRes._id,
@@ -80,24 +92,30 @@ class CotaServices {
                 }
             })
             .catch(err => {
-                console.debug(err)
+                throw this.boom.internal('Failed to edit group', err)
             })
     }
 
-    deleteGroup(groupID){
-        return this.db.delete(groupID)
+    deleteGroup(groupID, ownerID){
+        return this.db.findByID(groupID)
+            .then(group => {
+                if(group._source.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions to delete group'))
+
+                return this.db.delete(groupID)
+            })
             .then(groupRes => {
                 return {
                     'message': `Sucessfully deleted group '${groupRes._id}'`
                 }
             })
             .catch(err => {
-                console.debug(err)
+                throw this.boom.internal('Failed to delete group', err)
             })
     }
 
-    getAllGroups(){
-        return this.db.getAll()
+    getAllGroups(ownerID){
+        return this.db.getAll(ownerID)
             .then(groupData => {
                 const groups = []
                 groupData.hits.hits.forEach(group => {
@@ -115,9 +133,12 @@ class CotaServices {
             })
     }
 
-    getGroup(groupID){
+    getGroup(groupID, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {
+                if(groupData.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions'))
+                    
                 const group = {
                     '_id': groupData._id,
                     'name': groupData._source.name,
@@ -131,7 +152,7 @@ class CotaServices {
             })
     }
 
-    addSeriesToGroup(groupID, series){
+    addSeriesToGroup(groupID, series, ownerID){
         // Needed to add closure of lambda function tasks
         const {db, movieAPI} = this
 
@@ -146,6 +167,9 @@ class CotaServices {
             .then(tasksResults => {
                 const group = tasksResults[0]._source
                 const seriesData = tasksResults[1]
+
+                if(group.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions'))
 
                 // Skip if the team is already in group
                 if(group.series.some(item => item.name == seriesData.name)) {
@@ -178,9 +202,12 @@ class CotaServices {
             })
     }
 
-    removeSeriesFromGroup(groupID, series){
+    removeSeriesFromGroup(groupID, series, ownerID){
         return this.db.findByID(groupID)
-            .then(groupData => {                
+            .then(groupData => {     
+                if(groupData._source.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions'))
+
                 const seriesIdx = groupData._source.series.findIndex(item => item.id == series)
                 if(seriesIdx === -1)
                     return {'message': `Could not find serie '${series}' in group '${groupID}'!`}
@@ -204,9 +231,12 @@ class CotaServices {
             })
     }
 
-    getSeriesSorted(groupID, min, max){
+    getSeriesSorted(groupID, min, max, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {
+                if(groupData._source.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions'))
+
                 // Needed to add closure of lambda function tasks
                 const {movieAPI} = this
 

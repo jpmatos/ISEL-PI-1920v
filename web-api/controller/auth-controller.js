@@ -20,7 +20,7 @@ class AuthController{
 
     login(req, res, next){
         if(req.isAuthenticated())
-        return next(this.boom.badRequest('Already authenticated'))
+            return next(this.boom.badRequest('Already authenticated'))
         
         this.service.verify(req.body.username, req.body.password)
             .then(isValid => {
