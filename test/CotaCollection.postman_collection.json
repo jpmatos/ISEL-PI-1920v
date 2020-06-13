@@ -7,8 +7,519 @@
 	},
 	"item": [
 		{
-			"name": "GetGroupSeriesSorted",
+			"name": "users-pre",
 			"item": [
+				{
+					"name": "RegisterUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0dcd27fc-f739-4a98-a47d-8bdf4ce0c9e4",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"username\", `\\\"${jsonData.username}\\\"`)",
+									"",
+									"pm.test('Should register user.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.username).to.eql(req.username)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"matos\",\n\t\"password\": \"matospassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/register",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "37aff6d7-9745-4554-bc3a-d00b3dce938b",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should login.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.username).to.eql(req.username)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": {{username}},\n\t\"password\": \"matospassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/login",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSession",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8a8f726f-740c-45f6-ae61-93717b089034",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"userID\", jsonData.user._id)",
+									"",
+									"pm.test('Should get session.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.isAuthenticated).to.eql(true)",
+									"    pm.expect(res.user._id).to.be.a('string')",
+									"    pm.expect(res.user.username).to.equal(environment.username.replace('\\\"', '').replace('\\\"', ''))",
+									"    pm.expect(res.user._id).to.be.a('string')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/session",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "groups",
+			"item": [
+				{
+					"name": "GetGroupSeriesSorted",
+					"item": [
+						{
+							"name": "CreateGroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "f1650e6c-3123-4586-b8e5-f767e977585c",
+										"exec": [
+											"const jsonData = JSON.parse(responseBody)",
+											"postman.setEnvironmentVariable(\"groupID\", jsonData._id)",
+											"",
+											"pm.test('Should return inserted group.', function(){",
+											"    const res = pm.response.json()",
+											"    const req = JSON.parse(request.data)",
+											"    pm.expect(res._id).to.be.a('string')",
+											"    pm.expect(res.name).to.eql(req.name)",
+											"    pm.expect(res.description).to.eql(req.description)",
+											"    pm.expect(res).to.have.a.property('series')",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
+								},
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups"
+									]
+								},
+								"description": "Creates a group"
+							},
+							"response": []
+						},
+						{
+							"name": "AddSerieToGroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"pm.test('Should return group with serie added.', function() {",
+											"    const res = pm.response.json()",
+											"    const serie = res.series[res.series.length-1]",
+											"    pm.expect(serie.name).to.be.a('string')",
+											"    pm.expect(serie.id).to.be.a('number')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups",
+										"{{groupID}}",
+										"series",
+										"{{serie1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddSerieToGroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"pm.test('Should return group with serie added.', function() {",
+											"    const res = pm.response.json()",
+											"    const serie = res.series[res.series.length-1]",
+											"    pm.expect(serie.name).to.be.a('string')",
+											"    pm.expect(serie.id).to.be.a('number')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie2}}",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups",
+										"{{groupID}}",
+										"series",
+										"{{serie2}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddSerieToGroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"pm.test('Should return group with serie added.', function() {",
+											"    const res = pm.response.json()",
+											"    const serie = res.series[res.series.length-1]",
+											"    pm.expect(serie.name).to.be.a('string')",
+											"    pm.expect(serie.id).to.be.a('number')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie3}}",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups",
+										"{{groupID}}",
+										"series",
+										"{{serie3}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddSerieToGroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"pm.test('Should return group with serie added.', function() {",
+											"    const res = pm.response.json()",
+											"    const serie = res.series[res.series.length-1]",
+											"    pm.expect(serie.name).to.be.a('string')",
+											"    pm.expect(serie.id).to.be.a('number')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie4}}",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups",
+										"{{groupID}}",
+										"series",
+										"{{serie4}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AddSerieToGroup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+										"exec": [
+											"var jsonData = JSON.parse(responseBody)",
+											"",
+											"pm.test('Should return group with serie added.', function() {",
+											"    const res = pm.response.json()",
+											"    const serie = res.series[res.series.length-1]",
+											"    pm.expect(serie.name).to.be.a('string')",
+											"    pm.expect(serie.id).to.be.a('number')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie5}}",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups",
+										"{{groupID}}",
+										"series",
+										"{{serie5}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetGroupSeriesSorted",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7c38a2b2-3a22-4584-ac20-71b87a65d67b",
+										"exec": [
+											"pm.test(\"Should return sorted and filtered series from a group\", function(){",
+											"    const res = pm.response.json()",
+											"    let lastVote = -1",
+											"    res.forEach(function(serie){",
+											"        if(lastVote == -1)",
+											"            lastVote = serie.vote_average",
+											"        pm.expect(serie.vote_average).to.be.at.most(lastVote)",
+											"        pm.expect(serie.vote_average).to.be.at.most(parseFloat(environment.max))",
+											"        pm.expect(serie.vote_average).to.be.at.least(parseFloat(environment.min))",
+											"    })",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series?min={{min}}&max={{max}}",
+									"host": [
+										"{{BASE_API_URL}}"
+									],
+									"path": [
+										"groups",
+										"{{groupID}}",
+										"series"
+									],
+									"query": [
+										{
+											"key": "min",
+											"value": "{{min}}"
+										},
+										{
+											"key": "max",
+											"value": "{{max}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "GetPopular",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3afe8a60-d0d0-4b29-8ebb-c04ba4849cf3",
+								"exec": [
+									"pm.test(\"Should return sorted popular movies.\", function () {",
+									"    const res = pm.response.json()",
+									"    pm.expect(Object.keys(res).length).to.be.above(0)",
+									"    res.forEach(function(movie){",
+									"        pm.expect(movie.id).to.be.a('number')",
+									"        pm.expect(movie.name).to.be.a('string')",
+									"        pm.expect(movie.popularity).to.be.a('number')",
+									"    })",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_API_URL}}/popular",
+							"host": [
+								"{{BASE_API_URL}}"
+							],
+							"path": [
+								"popular"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SearchSerie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0e045112-9851-4602-ac87-0f77961be574",
+								"exec": [
+									"pm.test(\"Should a series.\", function () {",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.id).to.be.a('number')",
+									"    pm.expect(res.name).to.be.a('string')",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_API_URL}}/tv/{{serie1}}",
+							"host": [
+								"{{BASE_API_URL}}"
+							],
+							"path": [
+								"tv",
+								"{{serie1}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "CreateGroup",
 					"event": [
@@ -60,6 +571,125 @@
 					"response": []
 				},
 				{
+					"name": "EditGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fd902f12-07d4-4c26-8974-f6a99d82df34",
+								"exec": [
+									"pm.test('Should return edited group.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.eql(environment.groupID)",
+									"    pm.expect(res.description).to.eql(req.description)",
+									"    pm.expect(res).to.have.a.property('series')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"DescriptionEdited\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
+							"host": [
+								"{{BASE_API_URL}}"
+							],
+							"path": [
+								"groups",
+								"{{groupID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllGroups",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "35b3cb7b-b260-4f38-89f9-e2460d414ff6",
+								"exec": [
+									"pm.test(\"Should return all groups\", function(){",
+									"    const res = pm.response.json()",
+									"    res.forEach(function(group){",
+									"      pm.expect(group._id).to.be.a('string')",
+									"      pm.expect(group.name).to.exist",
+									"      pm.expect(group.description).to.exist",
+									"      pm.expect(group.series).to.exist",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_API_URL}}/groups",
+							"host": [
+								"{{BASE_API_URL}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a28ab700-418e-431f-86b1-0becb77b26db",
+								"exec": [
+									"pm.test('Should return the requested group.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.name).to.exist",
+									"    pm.expect(res.description).to.exist",
+									"    pm.expect(res).to.have.a.property('series')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
+							"host": [
+								"{{BASE_API_URL}}"
+							],
+							"path": [
+								"groups",
+								"{{groupID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "AddSerieToGroup",
 					"event": [
 						{
@@ -99,178 +729,17 @@
 					"response": []
 				},
 				{
-					"name": "AddSerieToGroup",
+					"name": "RemoveSerieFromGroup",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
+								"id": "a2448fbf-b8ce-4f78-b90a-b1f53e53df7d",
 								"exec": [
-									"var jsonData = JSON.parse(responseBody)",
-									"",
-									"pm.test('Should return group with serie added.', function() {",
+									"pm.test('Should return group with serue removed.', function(){",
 									"    const res = pm.response.json()",
-									"    const serie = res.series[res.series.length-1]",
-									"    pm.expect(serie.name).to.be.a('string')",
-									"    pm.expect(serie.id).to.be.a('number')",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie2}}",
-							"host": [
-								"{{BASE_API_URL}}"
-							],
-							"path": [
-								"groups",
-								"{{groupID}}",
-								"series",
-								"{{serie2}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "AddSerieToGroup",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody)",
-									"",
-									"pm.test('Should return group with serie added.', function() {",
-									"    const res = pm.response.json()",
-									"    const serie = res.series[res.series.length-1]",
-									"    pm.expect(serie.name).to.be.a('string')",
-									"    pm.expect(serie.id).to.be.a('number')",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie3}}",
-							"host": [
-								"{{BASE_API_URL}}"
-							],
-							"path": [
-								"groups",
-								"{{groupID}}",
-								"series",
-								"{{serie3}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "AddSerieToGroup",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody)",
-									"",
-									"pm.test('Should return group with serie added.', function() {",
-									"    const res = pm.response.json()",
-									"    const serie = res.series[res.series.length-1]",
-									"    pm.expect(serie.name).to.be.a('string')",
-									"    pm.expect(serie.id).to.be.a('number')",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie4}}",
-							"host": [
-								"{{BASE_API_URL}}"
-							],
-							"path": [
-								"groups",
-								"{{groupID}}",
-								"series",
-								"{{serie4}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "AddSerieToGroup",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody)",
-									"",
-									"pm.test('Should return group with serie added.', function() {",
-									"    const res = pm.response.json()",
-									"    const serie = res.series[res.series.length-1]",
-									"    pm.expect(serie.name).to.be.a('string')",
-									"    pm.expect(serie.id).to.be.a('number')",
-									"})"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"url": {
-							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie5}}",
-							"host": [
-								"{{BASE_API_URL}}"
-							],
-							"path": [
-								"groups",
-								"{{groupID}}",
-								"series",
-								"{{serie5}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GetGroupSeriesSorted",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "7c38a2b2-3a22-4584-ac20-71b87a65d67b",
-								"exec": [
-									"pm.test(\"Should return sorted and filtered series from a group\", function(){",
-									"    const res = pm.response.json()",
-									"    let lastVote = -1",
-									"    res.forEach(function(serie){",
-									"        if(lastVote == -1)",
-									"            lastVote = serie.vote_average",
-									"        pm.expect(serie.vote_average).to.be.at.most(lastVote)",
-									"        pm.expect(serie.vote_average).to.be.at.most(parseFloat(environment.max))",
-									"        pm.expect(serie.vote_average).to.be.at.least(parseFloat(environment.min))",
+									"    res.series.forEach(function(serie){",
+									"        pm.expect(serie.name).to.not.eql(environment.serie)",
 									"    })",
 									"})"
 								],
@@ -279,27 +748,53 @@
 						}
 					],
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series?min={{min}}&max={{max}}",
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
 							"host": [
 								"{{BASE_API_URL}}"
 							],
 							"path": [
 								"groups",
 								"{{groupID}}",
-								"series"
+								"series",
+								"{{serie1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "55a5519a-06e7-4426-889c-0d3b194159d3",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should delete group.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
+							"host": [
+								"{{BASE_API_URL}}"
 							],
-							"query": [
-								{
-									"key": "min",
-									"value": "{{min}}"
-								},
-								{
-									"key": "max",
-									"value": "{{max}}"
-								}
+							"path": [
+								"groups",
+								"{{groupID}}"
 							]
 						}
 					},
@@ -309,322 +804,131 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "GetPopular",
-			"event": [
+			"name": "users-post",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"id": "3afe8a60-d0d0-4b29-8ebb-c04ba4849cf3",
-						"exec": [
-							"pm.test(\"Should return sorted popular movies.\", function () {",
-							"    const res = pm.response.json()",
-							"    pm.expect(Object.keys(res).length).to.be.above(0)",
-							"    res.forEach(function(movie){",
-							"        pm.expect(movie.id).to.be.a('number')",
-							"        pm.expect(movie.name).to.be.a('string')",
-							"        pm.expect(movie.popularity).to.be.a('number')",
-							"    })",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{BASE_API_URL}}/popular",
-					"host": [
-						"{{BASE_API_URL}}"
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "136aa1e6-215d-43ea-8e25-49228c4d4990",
+								"exec": [
+									"pm.test('Should logout.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res).to.eql(null)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"popular"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SearchSerie",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "0e045112-9851-4602-ac87-0f77961be574",
-						"exec": [
-							"pm.test(\"Should a series.\", function () {",
-							"    const res = pm.response.json()",
-							"    pm.expect(res.id).to.be.a('number')",
-							"    pm.expect(res.name).to.be.a('string')",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{BASE_API_URL}}/tv/{{serie1}}",
-					"host": [
-						"{{BASE_API_URL}}"
-					],
-					"path": [
-						"tv",
-						"{{serie1}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "CreateGroup",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "f1650e6c-3123-4586-b8e5-f767e977585c",
-						"exec": [
-							"const jsonData = JSON.parse(responseBody)",
-							"postman.setEnvironmentVariable(\"groupID\", jsonData._id)",
-							"",
-							"pm.test('Should return inserted group.', function(){",
-							"    const res = pm.response.json()",
-							"    const req = JSON.parse(request.data)",
-							"    pm.expect(res._id).to.be.a('string')",
-							"    pm.expect(res.name).to.eql(req.name)",
-							"    pm.expect(res.description).to.eql(req.description)",
-							"    pm.expect(res).to.have.a.property('series')",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/logout",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{BASE_API_URL}}/groups",
-					"host": [
-						"{{BASE_API_URL}}"
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "37aff6d7-9745-4554-bc3a-d00b3dce938b",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should login.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.username).to.eql(req.username)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"path": [
-						"groups"
-					]
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": {{username}},\n\t\"password\": \"matospassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/login",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
 				},
-				"description": "Creates a group"
-			},
-			"response": []
-		},
-		{
-			"name": "EditGroup",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"id": "fd902f12-07d4-4c26-8974-f6a99d82df34",
-						"exec": [
-							"pm.test('Should return edited group.', function(){",
-							"    const res = pm.response.json()",
-							"    const req = JSON.parse(request.data)",
-							"    pm.expect(res._id).to.eql(environment.groupID)",
-							"    pm.expect(res.description).to.eql(req.description)",
-							"    pm.expect(res).to.have.a.property('series')",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+					"name": "DeleteUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a1e66fc4-1b9f-4717-b50b-30532f6383b3",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"",
+									"pm.test('Should delete user.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/delete/{{userID}}",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"delete",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
 				}
 			],
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"description\": \"DescriptionEdited\"\n}"
-				},
-				"url": {
-					"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
-					"host": [
-						"{{BASE_API_URL}}"
-					],
-					"path": [
-						"groups",
-						"{{groupID}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetAllGroups",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "35b3cb7b-b260-4f38-89f9-e2460d414ff6",
-						"exec": [
-							"pm.test(\"Should return all groups\", function(){",
-							"    const res = pm.response.json()",
-							"    res.forEach(function(group){",
-							"      pm.expect(group._id).to.be.a('string')",
-							"      pm.expect(group.name).to.exist",
-							"      pm.expect(group.description).to.exist",
-							"      pm.expect(group.series).to.exist",
-							"    })",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{BASE_API_URL}}/groups",
-					"host": [
-						"{{BASE_API_URL}}"
-					],
-					"path": [
-						"groups"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetGroup",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "a28ab700-418e-431f-86b1-0becb77b26db",
-						"exec": [
-							"pm.test('Should return the requested group.', function(){",
-							"    const res = pm.response.json()",
-							"    pm.expect(res._id).to.be.a('string')",
-							"    pm.expect(res.name).to.exist",
-							"    pm.expect(res.description).to.exist",
-							"    pm.expect(res).to.have.a.property('series')",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{BASE_API_URL}}/groups/{{groupID}}",
-					"host": [
-						"{{BASE_API_URL}}"
-					],
-					"path": [
-						"groups",
-						"{{groupID}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "AddSerieToGroup",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "761ce0db-5973-4b0c-98fe-f8e9d6258aa4",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody)",
-							"",
-							"pm.test('Should return group with serie added.', function() {",
-							"    const res = pm.response.json()",
-							"    const serie = res.series[res.series.length-1]",
-							"    pm.expect(serie.name).to.be.a('string')",
-							"    pm.expect(serie.id).to.be.a('number')",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
-					"host": [
-						"{{BASE_API_URL}}"
-					],
-					"path": [
-						"groups",
-						"{{groupID}}",
-						"series",
-						"{{serie1}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "RemoveSerieFromGroup",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "a2448fbf-b8ce-4f78-b90a-b1f53e53df7d",
-						"exec": [
-							"pm.test('Should return group with serue removed.', function(){",
-							"    const res = pm.response.json()",
-							"    res.series.forEach(function(serie){",
-							"        pm.expect(serie.name).to.not.eql(environment.serie)",
-							"    })",
-							"})"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{BASE_API_URL}}/groups/{{groupID}}/series/{{serie1}}",
-					"host": [
-						"{{BASE_API_URL}}"
-					],
-					"path": [
-						"groups",
-						"{{groupID}}",
-						"series",
-						"{{serie1}}"
-					]
-				}
-			},
-			"response": []
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
@@ -651,9 +955,15 @@
 	],
 	"variable": [
 		{
-			"id": "4cbcd467-c250-4c0f-9b56-5fbdef6d8ccf",
+			"id": "47160969-9d95-47d9-8841-b677889a5372",
 			"key": "BASE_API_URL",
 			"value": "http://localhost:8000/api",
+			"type": "string"
+		},
+		{
+			"id": "4bfe558a-28e4-41ef-982f-4d2093a960b2",
+			"key": "BASE_AUTH_URL",
+			"value": "http://localhost:8000/auth",
 			"type": "string"
 		}
 	],
