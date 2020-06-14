@@ -61,16 +61,16 @@ class CotaDB{
         })
     }
 
-    getAll(cb){
-        const res = {'hits': {'hits': this.documents}}
+    getAll(ownerID){
+        const res = {'hits': {'hits': this.documents.filter(doc => doc.ownerID = ownerID)}}
         
         return Promise.resolve(res)
     }
 
-    findByID(id, cb){
+    findByID(id){
         let found = this.documents.find(item => item._id == parseInt(id))
         if(!found)
-            return cb({
+            return Promise.reject({
                 'statusCode': 404,
                 'message': `Could not find group '${id}'!`
             })

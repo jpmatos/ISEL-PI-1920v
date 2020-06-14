@@ -24,6 +24,9 @@ else {
 const env = require('./env.json')
 Object.assign(process.env, env)
 
+//See if DevMode was specificed
+const isDevMode = process.env.DEV_MODE
+
 //Require dependencies
 const express = require('express')
 const passport = require('passport')
@@ -49,6 +52,7 @@ const cotaController = require('./web-api/controller/cota-controller').init(cota
 const groupController = require('./web-api/controller/group-controller').init(cotaServices)
 const authController = require('./web-api/controller/auth-controller').init(authServices, boom)
 const errorHandler = require('./middleware/error-handler')
+const requiresAuth = require('./middleware/requires-auth')(isDevMode)
 
 //Passport setup
 passport.serializeUser((user, done) => {
@@ -75,7 +79,7 @@ app.use(expressSession({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/api', cotaApi(express.Router(), cotaController, groupController, boom))
+app.use('/api', cotaApi(express.Router(), cotaController, groupController, requiresAuth))
 app.use('/auth', authApi(express.Router(), authController))
 app.use(webpackMiddleware(webpack(webpackConfig)))
 app.use(errorHandler(boom))

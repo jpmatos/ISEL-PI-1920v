@@ -1,6 +1,6 @@
 'use strict'
 
-function setRouter(router, cotaController, groupController, boom) {
+function setRouter(router, cotaController, groupController, requireAuth) {
     // router.get('/', (req, res, next) => cotaController.home(req, res, next))
     router.get('/popular', (req, res, next) => cotaController.popular(req, res, next))
     router.get('/tv/:seriesID', (req, res, next) => cotaController.searchSeries(req, res, next))
@@ -15,12 +15,5 @@ function setRouter(router, cotaController, groupController, boom) {
     router.get('/groups/:groupID/series', requireAuth, (req, res, next) => groupController.getSeries(req, res, next))
 
     return router
-
-    function requireAuth(req, res, next){
-        if(req.isAuthenticated()) 
-            next()
-        else 
-            next(boom.unauthorized('This endpoint requires authentication'))
-    }
 }
 module.exports = setRouter
