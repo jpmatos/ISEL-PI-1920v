@@ -32,27 +32,33 @@ class CotaServices {
         return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    getAllGroups(cb){
+    deleteGroup(groupID){
+        return Promise.resolve({
+            'message': `Successfully deleted group '${groupID}'`
+        })
+    }
+
+    getAllGroups(){
         const filePath = this.path.join(__dirname, `/mock_data/getAllGroups.json`)
         return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    getGroup(groupID, cb){
+    getGroup(groupID){
         const filePath = this.path.join(__dirname, `/mock_data/getGroup-${groupID}.json`)
         return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    addSeriesToGroup(groupID, series, cb){
+    addSeriesToGroup(groupID, series){
         const filePath = this.path.join(__dirname, `/mock_data/addSeriesToGroup-${groupID}-${series}.json`)
         return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    removeSeriesFromGroup(groupID, series, cb){
+    removeSeriesFromGroup(groupID, series){
         const filePath = this.path.join(__dirname, `/mock_data/removeSeriesFromGroup-${groupID}-${series}.json`)
         return this.constructor.buildResponse(filePath, this.fs)
     }
 
-    getSeriesSorted(groupID, min, max, cb){
+    getSeriesSorted(groupID, min, max){
         const filePath = this.path.join(__dirname, `/mock_data/getSeriesSorted-${groupID}-${min}-${max}.json`)
         return this.constructor.buildResponse(filePath, this.fs)
     }

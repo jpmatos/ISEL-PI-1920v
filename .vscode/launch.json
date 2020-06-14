@@ -12,31 +12,6 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/cota-server.js"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program (MockAPI)",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/cota-server.js",
-            "args": [
-                "mock"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program (MockService)",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/cota-server.js",
-            "args": [
-                "null",
-                "mock"
-            ]
         }
     ]
 }

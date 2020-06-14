@@ -1,8 +1,12 @@
 'use strict'
 
+//Load env variables
+const env = require('./env.json')
+Object.assign(process.env, env)
+
 //See if mock API was specified
 let movieDataAPIPath
-if(process.argv[2] === 'mock') {
+if(process.env.SERVER_API === 'mock') {
   console.debug('Running API in Mock environment')
   movieDataAPIPath = './data/movie-database-data-mock'
 }
@@ -12,17 +16,13 @@ else {
 
 //See if mock service was specified
 let cotaServicesPath
-if(process.argv[3] === 'mock') {
+if(process.env.SERVER_SERVICE === 'mock') {
   console.debug('Running Service in Mock environment')
   cotaServicesPath = './service/cota-services-mock'
 }
 else {
   cotaServicesPath = './service/cota-services'
 }
-
-//Load env variables
-const env = require('./env.json')
-Object.assign(process.env, env)
 
 //See if DevMode was specificed
 const isDevMode = process.env.DEV_MODE
@@ -72,10 +72,8 @@ const app = express()
 // Middleware
 app.use(bodyParser.json())
 app.use(expressSession({
-  // name: 'session_id',
-  secret: '21313213dsadsadsa',
+  secret: '7eb0c97c-10e6-419c-b9b6-6326daca2c76',
   resave: false,
-  // saveUninitialized: true
 }))
 app.use(passport.initialize());
 app.use(passport.session());

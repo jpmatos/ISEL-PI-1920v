@@ -5,8 +5,6 @@
   "main": "cota-server.js",
   "scripts": {
     "start": "node cota-server.js",
-    "startdev": "node cota-server.js mock",
-    "startdev2": "node cota-server.js none mock",
     "test": "mocha"
   },
   "repository": {
