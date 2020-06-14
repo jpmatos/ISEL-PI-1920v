@@ -72,7 +72,7 @@ const app = express()
 // Middleware
 app.use(bodyParser.json())
 app.use(expressSession({
-  secret: '7eb0c97c-10e6-419c-b9b6-6326daca2c76',
+  secret: process.env.SESSION_SECRET,
   resave: false,
 }))
 app.use(passport.initialize());
