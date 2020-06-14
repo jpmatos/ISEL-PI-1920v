@@ -37,8 +37,13 @@ module.exports = (divMain) => {
         ev.preventDefault()
 
         const groupID = document.getElementById('selectGroupId').value
-        const min = document.getElementById('txtSortMin').value
-        const max = document.getElementById('txtSortMax').value
+        let min = document.getElementById('txtSortMin').value
+        let max = document.getElementById('txtSortMax').value
+
+        if(min == "")
+            min = 0
+        if(max == "")
+            max = 10
 
         util.getJSON(`${baseUrl}${groupID}/series?min=${min}&max=${max}`)
             .then(series => populateSortTable(series))
