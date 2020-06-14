@@ -1,13 +1,14 @@
 'use strict'
 
 class AuthServices{
-    constructor(db, boom){
+    constructor(db, bcrypt, boom){
         this.db = db
+        this.bcrypt = bcrypt
         this.boom = boom
     }
 
-    static init(db, boom){
-        return new AuthServices(db, boom)
+    static init(db, bcrypt, boom){
+        return new AuthServices(db, bcrypt, boom)
     }
 
     verify(username, password){
@@ -20,7 +21,7 @@ class AuthServices{
             .then(user => {
                 if (user == null)
                     return false
-                return user.password == password
+                return this.bcrypt.compare(password, user.password)
             })
             .catch(err => {
                 throw this.boom.internal('Failed to verify user', err)
@@ -41,19 +42,25 @@ class AuthServices{
     }
 
     createUser(username, password){
-        return this.db.create({
-            'username': username,
-            'password': password
-        })
-        .then(result => {
-            return {
-                '_id': result._id,
-                'username': username
-            }
-        })
-        .catch(err => {
-            throw this.boom.internal('Failed to create user', err)
-        })
+        return this.bcrypt.hash(password, 10)
+            .then(hash => {
+                return this.db.create({
+                    'username': username,
+                    'password': hash
+                })
+                .then(result => {
+                    return {
+                        '_id': result._id,
+                        'username': username
+                    }
+                })
+                .catch(err => {
+                    throw this.boom.internal('Failed to create user', err)
+                })
+            })
+            .catch(err => {
+                throw this.boom.internal('Failed to hash password', err)
+            })
     }
 
     existsUser(username){

@@ -38,6 +38,7 @@ const bodyParser = require('body-parser')
 const webpackConfig = require('./webpack.config.js')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
+const bcrypt = require('bcrypt')
 const boom = require('boom')
 
 //Require project files
@@ -47,7 +48,7 @@ const movieDataAPI = require(movieDataAPIPath).init(process.env.BASE_URL, proces
 const cotaDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_GROUPS_INDEX, nodefetch)
 const authDB = require('./data/cota-db').init(process.env.ES_BASE_URL, process.env.ES_USERS_INDEX, nodefetch)
 const cotaServices = require(cotaServicesPath).init(movieDataAPI, cotaDB, boom)
-const authServices = require('./service/auth-services').init(authDB, boom)
+const authServices = require('./service/auth-services').init(authDB, bcrypt, boom)
 const cotaController = require('./web-api/controller/cota-controller').init(cotaServices)
 const groupController = require('./web-api/controller/group-controller').init(cotaServices)
 const authController = require('./web-api/controller/auth-controller').init(authServices, boom)
