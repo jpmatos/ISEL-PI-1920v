@@ -11,6 +11,7 @@ const util = require('./util.js')
 
 module.exports = (divMain, groupID) => {
     const baseUrl = 'api/groups/'
+    const baseInviteUrl = 'invite/group/'
 
     const groupSelectionView = Handlebars.compile(groupSelection)
     const groupDetailView = Handlebars.compile(groupDetail)
@@ -58,6 +59,7 @@ module.exports = (divMain, groupID) => {
         util.getJSON(`${baseUrl}${groupID}`)
             .then(group => groupDetailView({'group': group}))
             .then(addGroupDetailView)
+            .then(() => addBtnClickEventListener('btnInvite', addInviteHandler))
             .then(() => addBtnClickEventListener('btnAddSeriesToGroup', addSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteSeriesFromGroup', deleteSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteGroup', deleteGroupHandler))
@@ -70,6 +72,21 @@ module.exports = (divMain, groupID) => {
     }
 
     //Button Handlers (Add Series, Remove Series, Delete Group)
+    function addInviteHandler(ev) {
+        ev.preventDefault()
+        const invitee = document.getElementById('txtInviteeName').value
+        if(invitee != ""){
+            util.postJSON(`${baseInviteUrl}${groupID}/user/${invitee}`)
+            .then(res =>  {
+                if(res.statusCode >= 400)
+                    util.showAlert(res.message)
+                else
+                    util.showAlert(res.message, 'success')
+            })
+            .catch(err => util.showAlert(err))
+        }
+    }
+
     function addSeriesHandler(ev) {
         ev.preventDefault()
         const seriesID = document.getElementById('txtSeriesId').value

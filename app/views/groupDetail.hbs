@@ -4,7 +4,12 @@
     <div class="card text-center">
         <div class="card-header">
             {{group.name}}
-            <button id="btnDeleteGroup" type="submit" class="btn btn-danger mb-2">Delete</button>
+            <form id="seriesForm" class="form-inline">
+                <div class="form-group mx-sm-3 mb-2">
+                    <input id="txtInviteeName" type="text" name="Invitee" class="form-control" placeholder="User">
+                </div>
+                <button id="btnInvite" type="submit" class="btn btn-success mb-2">Invite</button>
+            </form>
         </div>
         <div class="card-body">
             <blockquote class="blockquote mb-0">
@@ -52,6 +57,8 @@
     <button id="btnDeleteSeriesFromGroup" type="submit" class="btn btn-danger mb-2">Remove Series</button>
     {{/if}}
 </form>
+<br>
+<button id="btnDeleteGroup" type="submit" class="btn btn-danger mb-2">Delete Group</button>
 {{else}}
 <div class="card text-center bg-warning">
     <p class="card-text ">No groups found</p>
