@@ -1,0 +1,41 @@
+<form>
+    <button type="submit" class="btn btn-dark mb-2" id="buttonLogout">Log out</button>
+</form>
+<table class="table text-center">
+    <h3>Invites Sent</h2>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Invitee</th>
+            <th scope="col">Group</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each invites}}
+        <tr id="{{_id}}_row">
+            <td>{{_source.invitee}}</td>
+            <td>{{_source.group}}</td>
+            <td><button id={{_id}} type="submit" class="btn btn-danger mb-2">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<table class="table text-center">
+    <h3>Invites Pending</h2>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Inviter</th>
+            <th scope="col">Group</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each pendings}}
+        <tr id="{{_id}}_row">
+            <td>{{_source.inviter}}</td>
+            <td>{{_source.group}}</td>
+            <td>TODO</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

@@ -43,7 +43,7 @@ module.exports = (divMain, updateNavbar, sessionHolder) => {
                         }
                         else {
                             updateNavbar(sessionHolder)
-                            window.location.hash = 'logout'
+                            window.location.hash = 'profile'
                         }
                     })
             })

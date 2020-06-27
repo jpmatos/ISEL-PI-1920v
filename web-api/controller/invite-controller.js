@@ -11,6 +11,15 @@ class InviteController{
         return new InviteController(service, boom)
     }
 
+    getAll(req, res, next){
+        const userID = req.user._id
+
+        this.service
+            .getInvites(userID)
+            .then(message => res.status(200).json(message))
+            .catch(next)
+    }
+
     invite(req, res, next){
         const groupID = req.params.groupID  //ID
         const inviterID = req.user._id      //ID
@@ -22,5 +31,14 @@ class InviteController{
             .catch(next)
     }
 
+    delete(req, res, next){
+        const userID = req.user._id
+        const inviteID = req.params.inviteID
+
+        this.service
+            .deleteInvite(userID, inviteID)
+            .then(message => res.status(200).json(message))
+            .catch(next)
+    }
 }
 module.exports = InviteController
