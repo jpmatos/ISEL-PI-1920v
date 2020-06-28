@@ -34,7 +34,10 @@
         <tr id="{{_id}}_row">
             <td>{{_source.inviter}}</td>
             <td>{{_source.group}}</td>
-            <td>TODO</td>
+            <td>
+                <button id="{{_id}}_accept" type="submit" class="btn btn-success mb-2">Accept</button>
+                <button id={{_id}} type="submit" class="btn btn-danger mb-2">Delete</button>
+            </td>
         </tr>
         {{/each}}
     </tbody>

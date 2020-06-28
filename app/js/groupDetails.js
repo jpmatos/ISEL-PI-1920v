@@ -11,7 +11,7 @@ const util = require('./util.js')
 
 module.exports = (divMain, groupID) => {
     const baseUrl = 'api/groups/'
-    const baseInviteUrl = 'invite/group/'
+    const baseInviteUrl = 'invite/'
 
     const groupSelectionView = Handlebars.compile(groupSelection)
     const groupDetailView = Handlebars.compile(groupDetail)
@@ -57,18 +57,21 @@ module.exports = (divMain, groupID) => {
     //Detailed View
     function createGroupDetailView(groupID) {
         util.getJSON(`${baseUrl}${groupID}`)
-            .then(group => groupDetailView({'group': group}))
-            .then(addGroupDetailView)
+            .then(group => {
+                addGroupDetailView(group)
+                return group
+            })
+            .then(addBtnClickEventsForKicks)
             .then(() => addBtnClickEventListener('btnInvite', addInviteHandler))
             .then(() => addBtnClickEventListener('btnAddSeriesToGroup', addSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteSeriesFromGroup', deleteSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteGroup', deleteGroupHandler))
     }
 
-    function addGroupDetailView(groupView) {
+    function addGroupDetailView(group) {
         deleteGroupDetail()
         deleteSeriesForm()
-        divMain.insertAdjacentHTML('beforeend', groupView)
+        divMain.insertAdjacentHTML('beforeend', groupDetailView({'group': group}))
     }
 
     //Button Handlers (Add Series, Remove Series, Delete Group)
@@ -76,7 +79,7 @@ module.exports = (divMain, groupID) => {
         ev.preventDefault()
         const invitee = document.getElementById('txtInviteeName').value
         if(invitee != ""){
-            util.postJSON(`${baseInviteUrl}${groupID}/user/${invitee}`)
+            util.postJSON(`${baseInviteUrl}group/${groupID}/user/${invitee}`)
             .then(res =>  {
                 if(res.statusCode >= 400)
                     util.showAlert(res.message)
@@ -210,6 +213,17 @@ module.exports = (divMain, groupID) => {
                 selectGroupId.selectedIndex = 0
             }
         }
+    }
+
+    function addBtnClickEventsForKicks(group){
+        group.invitees.forEach(invitee => 
+            addBtnClickEventListener(invitee.userID, () => 
+                kickInvitee(invitee.userID)))
+    }
+
+    function kickInvitee(inviteeID){
+        util.putJSON(`${baseInviteUrl}group/${groupID}/kick/${inviteeID}`)
+            .then(() => document.getElementById(inviteeID + '_row').remove())
     }
 
 

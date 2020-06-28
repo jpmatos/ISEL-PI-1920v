@@ -53,7 +53,8 @@ class CotaServices {
             'owner': ownerID,
             'name': name, 
             'description': desc, 
-            'series': []
+            'series': [],
+            'invitees': []
         }
         return this.db.create(group)
             .then(groupRes => {
@@ -61,7 +62,8 @@ class CotaServices {
                     '_id': groupRes._id,
                     'name': name,
                     'description': desc,
-                    'series': []
+                    'series': [],
+                    'invitees': []
                 }
             })
             .catch(err => {
@@ -88,7 +90,8 @@ class CotaServices {
                     '_id': groupRes._id,
                     'name': groupRes.get._source.name,
                     'description': groupRes.get._source.description,
-                    'series': groupRes.get._source.series
+                    'series': groupRes.get._source.series,
+                    'invitees': groupRes.get._source.invitees
                 }
             })
             .catch(err => {
@@ -123,7 +126,8 @@ class CotaServices {
                         '_id': group._id,
                         'name': group._source.name,
                         'description': group._source.description,
-                        'series': group._source.series
+                        'series': group._source.series,
+                        'invitees': group._source.invitees
                     })
                 })
                 return groups
@@ -143,7 +147,8 @@ class CotaServices {
                     '_id': groupData._id,
                     'name': groupData._source.name,
                     'description': groupData._source.description,
-                    'series': groupData._source.series
+                    'series': groupData._source.series,
+                    'invitees': groupData._source.invitees
                 }
                 return group
             })
@@ -190,7 +195,8 @@ class CotaServices {
                             '_id': groupRes._id,
                             'name': groupRes.get._source.name,
                             'description': groupRes.get._source.description,
-                            'series': groupRes.get._source.series
+                            'series': groupRes.get._source.series,
+                            'invitees': groupRes.get._source.invitees
                         }
                     })
                     .catch(err => {
@@ -219,7 +225,8 @@ class CotaServices {
                             '_id': groupRes._id,
                             'name': groupRes.get._source.name,
                             'description': groupRes.get._source.description,
-                            'series': groupRes.get._source.series
+                            'series': groupRes.get._source.series,
+                            'invitees': groupRes.get._source.invitees
                         }
                     })
                     .catch(err => {

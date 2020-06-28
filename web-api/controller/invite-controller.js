@@ -40,5 +40,26 @@ class InviteController{
             .then(message => res.status(200).json(message))
             .catch(next)
     }
+
+    accept(req, res, next){
+        const userID = req.user._id
+        const inviteID = req.params.inviteID
+
+        this.service
+            .acceptInvite(userID, inviteID)
+            .then(message => res.status(200).json(message))
+            .catch(next)
+    }
+
+    kick(req, res, next){
+        const userID = req.user._id
+        const groupID = req.params.groupID
+        const inviteeID = req.params.inviteeID
+
+        this.service
+            .removeInvitee(userID, groupID, inviteeID)
+            .then(message => res.status(200).json(message))
+            .catch(next)
+    }
 }
 module.exports = InviteController

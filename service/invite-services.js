@@ -27,6 +27,9 @@ class InviteService {
                     "pendings": pendings
                 }
             })
+            .catch(err => {
+                this.boom.internal('Error getting invites.', err)
+            })
     }
 
     inviteToGroup(groupID, inviterID, invitee){
@@ -53,6 +56,10 @@ class InviteService {
                     return Promise.reject(this.boom.badRequest(`User '${invitee}' not found!`))
                 }
                 const inviteeData = inviteeDataRaw.hits.hits[0]
+
+                //Check if invitee is already in group
+                if(groupData._source.invitees.filter(item => item.userID == inviteeData._id).length > 0)
+                    return Promise.reject(this.boom.badRequest(`User '${invitee}' already in group!`))
 
                 //Check if the user didn't try to invite itself
                 if(inviteeData._source.username === inviterData._source.username)
@@ -92,6 +99,43 @@ class InviteService {
             })
             .then(result => {
                 return {'message': 'Successfuly deleted invite.'}
+            })
+    }
+
+    acceptInvite(userID, inviteID){
+        let inviteeName
+        this.inviteDB.findByID(inviteID)
+            .then(invite => {
+                if(invite._source.inviteeID !== userID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions!'))
+                inviteeName = invite._source.invitee
+                return this.groupDB.findByID(invite._source.groupID)
+            })
+            .then(groupData => {
+                let group = groupData._source
+                group.invitees.push({
+                    'userID': userID,
+                    'username': inviteeName
+                })
+                return this.groupDB.update(groupData._id, group)
+            })
+            .then((resultUpdate) => {
+                return this.deleteInvite(userID, inviteID)
+            })
+    }
+
+    removeInvitee(userID, groupID, inviteeID){
+        this.groupDB.findByID(groupID)
+            .then(groupData => {
+                if(userID !== groupData._source.owner && userID !== inviteeID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions!'))
+
+                const inviteeIdx = groupData._source.invitees.findIndex(item => item.userID == inviteeID)
+                if(inviteeIdx === -1)
+                    return Promise.reject(this.boom.badRequest('User not in group invitees!'))
+
+                groupData._source.invitees.splice(inviteeIdx, 1)
+                return this.groupDB.update(groupID, {'invitees': groupData._source.invitees})
             })
     }
 }
