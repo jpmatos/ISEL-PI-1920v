@@ -115,6 +115,21 @@ class GroupController{
             .catch(next)
     }
 
+    updateRating(req, res, next){
+        const groupID = req.params.groupID
+        const seriesID = req.params.seriesID
+        const rating = parseInt(req.params.rating)
+        const userID = req.user._id
+
+        if(rating < 0 || rating > 10)
+            return next(this.boom.badRequest('Invalid series rating'))
+
+        this.service
+            .updateSeriesRating(groupID, seriesID, rating, userID)
+            .then(ratingAverage => res.status(200).json(ratingAverage))
+            .catch(next)
+    }
+
     // /**
     //  * Builds the HTTP response
     //  * @param {ServerResponse} res - **ServerResponse** the response object

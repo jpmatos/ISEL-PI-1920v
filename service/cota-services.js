@@ -269,5 +269,41 @@ class CotaServices {
                 this.boom.internal('Error getting series sorted', err)
             })
     }
+
+    updateSeriesRating(groupID, seriesID, rating, ownerID){
+        return this.db.findByID(groupID)
+            .then(group => {
+                if(group._source.owner != ownerID)
+                    return Promise.reject(this.boom.badRequest('Insufficient permissions to edit group'))
+
+                const newSeries = group._source.series.map(serie => {
+                    if(serie.id != seriesID)
+                        return serie
+                    serie.rating = rating
+                    return serie
+                })
+                const newGroup = {
+                    'series': newSeries
+                }
+                return this.db.update(groupID, newGroup)
+            })
+            .then(group => {
+                let total = 0;
+                let numberOfRatings = 0;
+                group.get._source.series.forEach(serie => {
+                    if(serie.rating){
+                        total += serie.rating
+                        numberOfRatings++;
+                    }
+                })
+                const average = total/numberOfRatings
+                return {
+                    'average': average
+                }
+            })
+            .catch(err => {
+                this.boom.internal('Error getting series sorted', err)
+            })
+    }
 }
 module.exports = CotaServices

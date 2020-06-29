@@ -15,11 +15,21 @@
     {{#if group.series}}
     <div id="divSeriesTable">
         <br>
+        <form id="ratingForm" class="form-inline">
+        <div class="form-group mx-sm-3 mb-2">
+            <h4>Rating:</h4>
+            <input id="txtRatingId" type="text" name="Rating" class="form-control text-center" placeholder="value">
+            <h4>Average:</h4>
+            <h4 id="averageDiv"></h4>
+        </div>
+        </form>
         <table class="table table-striped text-center">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody id="seriesTableBody">
@@ -27,6 +37,14 @@
                 <tr id="Series_{{id}}">
                     <td>{{id}}</td>
                     <td>{{name}}</td>
+                    <td>
+                        <h6 id='rating_{{id}}'></h6>
+                    </td>
+                    <td>
+                        <form class="form-inline">
+                            <button id='Button_{{id}}' type="submit" class="btn btn-success mb-2">Add Rating</button>
+                        </form>
+                    </td>
                 </tr>
                 {{/each}}
             </tbody>

@@ -1,4 +1,12 @@
 <tr id='Series_{{series.id}}'>
     <td>{{series.id}}</td>
     <td>{{series.name}}</td>
+    <td>
+        <h6 id='rating_{{series.id}}'></h6>
+    </td>
+    <td>
+        <form id="ratingForm" class="form-inline">
+            <button id='Button_{{series.id}}' type="submit" class="btn btn-success mb-2">Add Rating</button>
+        </form>
+    </td>
 </tr>

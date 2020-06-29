@@ -20,7 +20,8 @@ function setRouter(router, cotaController, groupController, requireAuth) {
         requireAuth, (req, res, next) => groupController.removeSeries(req, res, next))
     router.get('/groups/:groupID/series', 
         requireAuth, (req, res, next) => groupController.getSeries(req, res, next))
-
+    router.post('/groups/:groupID/series/:seriesID/rating/:rating', 
+        requireAuth, (req, res, next) => groupController.updateRating(req, res, next))
     return router
 }
 module.exports = setRouter

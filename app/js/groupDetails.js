@@ -56,17 +56,28 @@ module.exports = (divMain, groupID) => {
     //Detailed View
     function createGroupDetailView(groupID) {
         util.getJSON(`${baseUrl}${groupID}`)
-            .then(group => groupDetailView({'group': group}))
             .then(addGroupDetailView)
             .then(() => addBtnClickEventListener('btnAddSeriesToGroup', addSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteSeriesFromGroup', deleteSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteGroup', deleteGroupHandler))
     }
 
-    function addGroupDetailView(groupView) {
+    function addGroupDetailView(group) {
         deleteGroupDetail()
         deleteSeriesForm()
-        divMain.insertAdjacentHTML('beforeend', groupView)
+        let total = 0;
+        let numberOfRatings = 0;
+        divMain.insertAdjacentHTML('beforeend', groupDetailView({'group': group}))
+        group.series.forEach(serie => {
+            if(serie.rating){
+                total += serie.rating
+                numberOfRatings++;
+                document.getElementById(`rating_${serie.id}`).innerHTML = serie.rating
+            }
+            addBtnClickEventListener('Button_' + serie.id, ratingSeriesHandler)
+        });
+        if(numberOfRatings != 0)
+            document.getElementById('averageDiv').innerHTML = (total/numberOfRatings).toFixed(2)
     }
 
     //Button Handlers (Add Series, Remove Series, Delete Group)
@@ -120,6 +131,7 @@ module.exports = (divMain, groupID) => {
             if(tbody.rows.length != group.series.length) {
                 const series = group.series[group.series.length - 1]
                 tbody.insertAdjacentHTML('beforeend', seriesRowView({'series': series}))
+                addBtnClickEventListener('Button_' + series.id, ratingSeriesHandler)
             }
         } else {
             deleteResourceNotFound()
@@ -127,6 +139,23 @@ module.exports = (divMain, groupID) => {
             addDeleteButton()
         }
     }
+
+    function ratingSeriesHandler(ev) {
+        ev.preventDefault()
+        const id = ev.target.id.replace('Button_','')
+        const rating = document.getElementById('txtRatingId').value
+        util.postJSON(`${baseUrl}${groupID}/series/${id}/rating/${rating}`)
+            .then(response => {
+                if(response.statusCode == 400)
+                    util.showAlert('Error adding rating: ' + response.message)
+                else{
+                    document.getElementById('averageDiv').innerHTML = response.average.toFixed(2)
+                    document.getElementById(`rating_${id}`).innerHTML = rating
+                }
+            })
+        
+    }
+
 
     function deleteSeriesRow(seriesID) {
         const row = document.getElementById(`Series_${seriesID}`)
@@ -165,6 +194,7 @@ module.exports = (divMain, groupID) => {
             document
                 .getElementById('seriesTableBody')
                 .insertAdjacentHTML('beforeend', seriesRowView({'series': series}))
+                addBtnClickEventListener('Button_' + series.id, ratingSeriesHandler)
         }
     }
 
