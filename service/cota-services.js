@@ -34,7 +34,6 @@ class CotaServices {
     searchSeries(series){
         return this.movieAPI.getSeriesShow(series)
             .then(seriesData => {
-
                 const seriesRes = {
                     'id': seriesData.id,
                     'name': seriesData.name,
@@ -60,6 +59,7 @@ class CotaServices {
             .then(groupRes => {
                 return {
                     '_id': groupRes._id,
+                    'owner': ownerID,
                     'name': name,
                     'description': desc,
                     'series': [],
@@ -118,12 +118,19 @@ class CotaServices {
     }
 
     getAllGroups(ownerID){
-        return this.db.getAll(ownerID)
-            .then(groupData => {
+        return this.db.getAll()
+            .then(groupsData => {
+                const groupsFiltered = groupsData.hits.hits
+                    .filter(item => {
+                        const isOwner = item._source.owner === ownerID
+                        const isInvitee = item._source.invitees.filter(item2 => item2.userID === ownerID).length > 0
+                        return isOwner || isInvitee
+                    })
                 const groups = []
-                groupData.hits.hits.forEach(group => {
+                groupsFiltered.forEach(group => {
                     groups.push({
                         '_id': group._id,
+                        'owner': group._source.owner,
                         'name': group._source.name,
                         'description': group._source.description,
                         'series': group._source.series,

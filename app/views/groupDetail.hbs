@@ -12,13 +12,13 @@
         </div>
     </div>
     <br>
-    <form id="seriesForm" class="form-inline">
+    <h4>Users Invited</h2>
+    <form id="inviteeForm" class="form-inline">
         <div class="form-group mx-sm-3 mb-2">
             <input id="txtInviteeName" type="text" name="Invitee" class="form-control" placeholder="User">
         </div>
         <button id="btnInvite" type="submit" class="btn btn-success mb-2">Invite</button>
     </form>
-    <h4>Users Invited</h2>
     <div id="divInviteesTable">
         <br>
         <table class="table table-striped text-center">
@@ -28,7 +28,7 @@
                     <th scope="col">Action</th>
                 </tr>
             </thead>
-            <tbody id="seriesTableBody">
+            <tbody id="inviteesTableBody">
                 {{#each group.invitees}}
                 <tr id="{{userID}}_row">
                     <td>{{username}}</td>
@@ -38,6 +38,16 @@
             </tbody>
         </table>
     </div>
+    <h4>Series in Group</h2>
+    <form id="seriesForm" class="form-inline">
+    <div class="form-group mx-sm-3 mb-2">
+        <input id="txtSeriesId" type="text" name="SeriesId" class="form-control text-center" placeholder="series id">
+    </div>
+    <button id="btnAddSeriesToGroup" type="submit" class="btn btn-success mb-2">Add Series</button>
+    {{#if group.series}}
+    <button id="btnDeleteSeriesFromGroup" type="submit" class="btn btn-danger mb-2">Remove Series</button>
+    {{/if}}
+    </form>
     {{#if group.series}}
     <div id="divSeriesTable">
         <br>
@@ -68,16 +78,6 @@
     </div>
     {{/if}}
 </div>
-
-<form id="seriesForm" class="form-inline">
-    <div class="form-group mx-sm-3 mb-2">
-        <input id="txtSeriesId" type="text" name="SeriesId" class="form-control text-center" placeholder="series id">
-    </div>
-    <button id="btnAddSeriesToGroup" type="submit" class="btn btn-success mb-2">Add Series</button>
-    {{#if group.series}}
-    <button id="btnDeleteSeriesFromGroup" type="submit" class="btn btn-danger mb-2">Remove Series</button>
-    {{/if}}
-</form>
 <br>
 <button id="btnDeleteGroup" type="submit" class="btn btn-danger mb-2">Delete Group</button>
 {{else}}

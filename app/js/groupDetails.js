@@ -19,8 +19,8 @@ module.exports = (divMain, groupID) => {
     const resourceNotFoundView = Handlebars.compile(resourceNotFound)
 
     util.getJSON(baseUrl)
-        .then(populateGroupSelection)
-        .then(onChangeSelect)
+        // .then(populateGroupSelection)
+        // .then(onChangeSelect)
         .then(checkGroupId)
 
 
@@ -40,17 +40,17 @@ module.exports = (divMain, groupID) => {
         return select
     }
 
-    function checkGroupId(select) {
+    function checkGroupId() {
         if (groupID) {
             createGroupDetailView(groupID)
 
-            const opts = select.options;
-            for (var opt, j = 0; opt = opts[j]; j++) {
-                if (opt.value == groupID) {
-                    select.selectedIndex = j;
-                    break;
-                }
-            }
+            // const opts = select.options;
+            // for (var opt, j = 0; opt = opts[j]; j++) {
+            //     if (opt.value == groupID) {
+            //         select.selectedIndex = j;
+            //         break;
+            //     }
+            // }
         }
     }
 
@@ -71,7 +71,8 @@ module.exports = (divMain, groupID) => {
     function addGroupDetailView(group) {
         deleteGroupDetail()
         deleteSeriesForm()
-        divMain.insertAdjacentHTML('beforeend', groupDetailView({'group': group}))
+        divMain.innerHTML = groupDetailView({'group': group})
+        // divMain.insertAdjacentHTML('beforeend', groupDetailView({'group': group}))
     }
 
     //Button Handlers (Add Series, Remove Series, Delete Group)
@@ -124,6 +125,7 @@ module.exports = (divMain, groupID) => {
         const divGroupDetail = document.getElementById('divGroupDetail')
         if(divGroupDetail) {
             divGroupDetail.remove()
+            // location.hash = 'groups'
         }
     }
 
@@ -144,14 +146,14 @@ module.exports = (divMain, groupID) => {
         } else {
             deleteResourceNotFound()
             createSeriesTable(group.series[0])
-            addDeleteButton()
+             addDeleteButton()
         }
     }
 
     function deleteSeriesRow(seriesID) {
         const row = document.getElementById(`Series_${seriesID}`)
         if(row) row.remove()
-        if(document.querySelector('tbody').rows.length == 0) {
+        if(document.getElementById('seriesTableBody').rows.length == 0) {
             deleteDivSeriesTable()
             addResourceNotFound()
             removeDeleteButton()
