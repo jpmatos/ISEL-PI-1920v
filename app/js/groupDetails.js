@@ -9,9 +9,10 @@ const seriesTable = require('./../views/seriesTable.html')
 const deleteButton = require('./../views/deleteButton.html')
 const util = require('./util.js')
 
-module.exports = (divMain, groupID) => {
+module.exports = (divMain, groupID, sessionHolder) => {
     const baseUrl = 'api/groups/'
     const baseInviteUrl = 'invite/'
+    let groupOwner = "";
 
     const groupSelectionView = Handlebars.compile(groupSelection)
     const groupDetailView = Handlebars.compile(groupDetail)
@@ -19,38 +20,11 @@ module.exports = (divMain, groupID) => {
     const resourceNotFoundView = Handlebars.compile(resourceNotFound)
 
     util.getJSON(baseUrl)
-        // .then(populateGroupSelection)
-        // .then(onChangeSelect)
         .then(checkGroupId)
-
-
-    //Drop-down group selector
-    function populateGroupSelection(groups) {
-        divMain.innerHTML = groupSelectionView({ 'groups': groups })
-    }
-
-    function onChangeSelect() {
-        const select = document.getElementById('selectGroupId')
-        if (select) {
-            select.onchange = () => {
-                groupID = select.options[select.selectedIndex].value
-                createGroupDetailView(groupID)
-            }
-        }
-        return select
-    }
 
     function checkGroupId() {
         if (groupID) {
             createGroupDetailView(groupID)
-
-            // const opts = select.options;
-            // for (var opt, j = 0; opt = opts[j]; j++) {
-            //     if (opt.value == groupID) {
-            //         select.selectedIndex = j;
-            //         break;
-            //     }
-            // }
         }
     }
 
@@ -72,7 +46,14 @@ module.exports = (divMain, groupID) => {
         deleteGroupDetail()
         deleteSeriesForm()
         divMain.innerHTML = groupDetailView({'group': group})
-        // divMain.insertAdjacentHTML('beforeend', groupDetailView({'group': group}))
+        sessionHolder.getSession()
+            .then(session => {
+                groupOwner = group.owner
+                if(session.user._id !== groupOwner){
+                    document.getElementById('usersInvitedDiv').remove()
+                    document.getElementById('btnDeleteGroup').textContent = "Leave Group"
+                }
+            })
     }
 
     //Button Handlers (Add Series, Remove Series, Delete Group)
@@ -113,10 +94,21 @@ module.exports = (divMain, groupID) => {
 
     function deleteGroupHandler(ev) {
         ev.preventDefault()
-        util.deleteJSON(`${baseUrl}${groupID}`)
-            .then(() => deleteGroupDetail())
-            .then(() => deleteSeriesForm())
-            .then(() => refreshGroupSelection())
+        sessionHolder.getSession()
+            .then(session => {
+                if(session.user._id === groupOwner)
+                    util.deleteJSON(`${baseUrl}${groupID}`)
+                        .then(() => deleteGroupDetail())
+                        .then(() => deleteSeriesForm())
+                        .then(() => refreshGroupSelection())
+                else{
+                    util.putJSON(`${baseInviteUrl}group/${groupID}/kick/${session.user._id}`)
+                        .then(() => {
+                            document.getElementById('divGroupDetail').remove()
+                            util.showAlert('Successfully left group.', 'success')
+                        })
+                }
+            })
     }
     
 
@@ -146,7 +138,7 @@ module.exports = (divMain, groupID) => {
         } else {
             deleteResourceNotFound()
             createSeriesTable(group.series[0])
-             addDeleteButton()
+            addDeleteButton()
         }
     }
 

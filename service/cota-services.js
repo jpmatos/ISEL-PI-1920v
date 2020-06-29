@@ -147,11 +147,13 @@ class CotaServices {
     getGroup(groupID, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {
-                if(groupData._source.owner != ownerID)
+                if(groupData._source.owner != ownerID &&
+                    groupData._source.invitees.filter(item => item.userID === ownerID).length == 0)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions'))
                     
                 const group = {
                     '_id': groupData._id,
+                    'owner': groupData._source.owner,
                     'name': groupData._source.name,
                     'description': groupData._source.description,
                     'series': groupData._source.series,
@@ -160,7 +162,7 @@ class CotaServices {
                 return group
             })
             .catch(err => {
-                this.boom.internal('Error creating group', err)
+                this.boom.internal('Error getting group', err)
             })
     }
 
@@ -180,7 +182,8 @@ class CotaServices {
                 const group = tasksResults[0]._source
                 const seriesData = tasksResults[1]
 
-                if(group.owner != ownerID)
+                if(group.owner != ownerID && 
+                    group.invitees.filter(item => item.userID === ownerID).length == 0)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions'))
 
                 // Skip if the team is already in group
@@ -218,7 +221,8 @@ class CotaServices {
     removeSeriesFromGroup(groupID, series, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {     
-                if(groupData._source.owner != ownerID)
+                if(groupData._source.owner != ownerID && 
+                    groupData._source.invitees.filter(item => item.userID === ownerID).length == 0)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions'))
 
                 const seriesIdx = groupData._source.series.findIndex(item => item.id == series)
@@ -248,7 +252,8 @@ class CotaServices {
     getSeriesSorted(groupID, min, max, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {
-                if(groupData._source.owner != ownerID)
+                if(groupData._source.owner != ownerID && 
+                    groupData._source.invitees.filter(item => item.userID === ownerID).length == 0)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions'))
 
                 // Needed to add closure of lambda function tasks
