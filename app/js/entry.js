@@ -36,7 +36,7 @@ router
     .use('#popular', () => popular(divMain))
     .use('#series', (id) => series(divMain, id))
     .use('#groups', () => groups(divMain), true)
-    .use('#group', (id) => groupDetails(divMain, id), true)
+    .use('#group', (id) => groupDetails(divMain, id, sessionHolder), true)
     .use('#groupSort', (id) => groupSort(divMain), true)
     .use('#login', () => login(divMain, getAuthAndInsertNavbar, sessionHolder))
     .use('#logout', () => logout(divMain, getAuthAndInsertNavbar, sessionHolder))

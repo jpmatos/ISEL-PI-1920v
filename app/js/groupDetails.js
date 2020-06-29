@@ -9,7 +9,7 @@ const seriesTable = require('./../views/seriesTable.html')
 const deleteButton = require('./../views/deleteButton.html')
 const util = require('./util.js')
 
-module.exports = (divMain, groupID) => {
+module.exports = (divMain, groupID, sessionHolder) => {
     const baseUrl = 'api/groups/'
 
     const groupSelectionView = Handlebars.compile(groupSelection)
@@ -56,17 +56,23 @@ module.exports = (divMain, groupID) => {
     //Detailed View
     function createGroupDetailView(groupID) {
         util.getJSON(`${baseUrl}${groupID}`)
-            .then(group => groupDetailView({'group': group}))
             .then(addGroupDetailView)
             .then(() => addBtnClickEventListener('btnAddSeriesToGroup', addSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteSeriesFromGroup', deleteSeriesHandler))
             .then(() => addBtnClickEventListener('btnDeleteGroup', deleteGroupHandler))
     }
 
-    function addGroupDetailView(groupView) {
+    function addGroupDetailView(group) {
         deleteGroupDetail()
         deleteSeriesForm()
-        divMain.insertAdjacentHTML('beforeend', groupView)
+        divMain.insertAdjacentHTML('beforeend', groupDetailView({'group': group}))
+        sessionHolder.getSession()
+            .then(session => {
+                if(group.owner != session.user._id){
+                    document.getElementById('btnDeleteGroup').remove()
+                    document.getElementById('seriesForm').remove()
+                }  
+            })
     }
 
     //Button Handlers (Add Series, Remove Series, Delete Group)

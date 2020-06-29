@@ -17,6 +17,7 @@ class GroupController{
     create(req, res, next){
         const name = req.body.name
         const description = req.body.description
+        const priv = req.body.checkPrivate
         const userID = req.user._id
 
         if(this.regexNoEmpty.test(name))
@@ -25,7 +26,7 @@ class GroupController{
             return next(this.boom.badRequest('Invalid description'))
 
         this.service
-            .createGroup(name, description, userID)
+            .createGroup(name, description, priv, userID)
             .then(groupData => res.status(201).json(groupData))
             .catch(next)
     }
@@ -34,6 +35,7 @@ class GroupController{
         const groupID = req.params.groupID
         const name = req.body.name
         const description = req.body.description
+        const priv = req.body.checkPrivate
         const userID = req.user._id
 
         if(this.regex.test(name))
@@ -42,7 +44,7 @@ class GroupController{
             return next(this.boom.badRequest('Invalid description'))
 
         this.service
-            .editGroup(groupID, name, description, userID)
+            .editGroup(groupID, name, description, priv, userID)
             .then(groupData => res.status(200).json(groupData))
             .catch(next)
     }

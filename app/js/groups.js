@@ -27,13 +27,19 @@ module.exports = async (divMain) => {
             .value
         const description = document.getElementById('txtGroupDescription')
             .value
-        addNewGroup(name, description)
+        const checkPrivate = document.getElementById('checkPrivate')
+            .checked
+        addNewGroup(name, description, checkPrivate)
     }
 
-    function addNewGroup(name, description) {
-        util.postJSON(baseUrl, { name, description })
-            .then(group => addNewGroupToTable(group))
-            .catch(err => util.showAlert('Error creating new group: ' + JSON.stringify(err)))
+    function addNewGroup(name, description, checkPrivate) {
+        util.postJSON(baseUrl, { name, description, checkPrivate })
+            .then(group => { 
+                addNewGroupToTable(group)
+            })
+            .catch(err => {
+                util.showAlert('Error creating new group: ' + JSON.stringify(err))
+            })
     }
 
     function addNewGroupToTable(groups) {

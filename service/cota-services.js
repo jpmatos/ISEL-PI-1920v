@@ -48,11 +48,12 @@ class CotaServices {
             })
     }
 
-    createGroup(name, desc, ownerID){
+    createGroup(name, desc, priv, ownerID){
         const group = {
             'owner': ownerID,
             'name': name, 
-            'description': desc, 
+            'description': desc,
+            'checkPrivate': priv, 
             'series': []
         }
         return this.db.create(group)
@@ -61,6 +62,7 @@ class CotaServices {
                     '_id': groupRes._id,
                     'name': name,
                     'description': desc,
+                    'checkPrivate': priv,
                     'series': []
                 }
             })
@@ -69,13 +71,14 @@ class CotaServices {
             })
     }
 
-    editGroup(id, name, desc, ownerID) {
+    editGroup(id, name, desc, priv, ownerID) {
         const updatedGroup = {}
         if(name) 
             updatedGroup.name = name
         if(desc) 
             updatedGroup.description = desc
-
+        if(priv)
+            updatedGroup.checkPrivate = priv
         return this.db.findByID(id)
             .then(group => {
                 if(group._source.owner != ownerID)
@@ -88,6 +91,7 @@ class CotaServices {
                     '_id': groupRes._id,
                     'name': groupRes.get._source.name,
                     'description': groupRes.get._source.description,
+                    'checkPrivate': groupRes.get._source.checkPrivate,
                     'series': groupRes.get._source.series
                 }
             })
@@ -115,16 +119,18 @@ class CotaServices {
     }
 
     getAllGroups(ownerID){
-        return this.db.getAll(ownerID)
+        return this.db.getAll()
             .then(groupData => {
                 const groups = []
                 groupData.hits.hits.forEach(group => {
-                    groups.push({
-                        '_id': group._id,
-                        'name': group._source.name,
-                        'description': group._source.description,
-                        'series': group._source.series
-                    })
+                    if(group._source.owner==ownerID || !group._source.checkPrivate)
+                        groups.push({
+                            '_id': group._id,
+                            'name': group._source.name,
+                            'description': group._source.description,
+                            'checkPrivate': group._source.checkPrivate,
+                            'series': group._source.series
+                        })
                 })
                 return groups
             })
@@ -136,11 +142,12 @@ class CotaServices {
     getGroup(groupID, ownerID){
         return this.db.findByID(groupID)
             .then(groupData => {
-                if(groupData._source.owner != ownerID)
+                if(groupData._source.owner != ownerID && groupData._source.checkPrivate)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions'))
                     
                 const group = {
                     '_id': groupData._id,
+                    'owner': groupData._source.owner,
                     'name': groupData._source.name,
                     'description': groupData._source.description,
                     'series': groupData._source.series
