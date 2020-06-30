@@ -35,7 +35,7 @@ class AuthController{
                         next(err)
                     else {
                         delete user.password;
-                        res.json(user)
+                        res.status(200).json(user)
                     }
                 })
             })
@@ -43,7 +43,7 @@ class AuthController{
 
     register(req, res, next){
         this.service.registerUser(req.body.username, req.body.password)
-            .then(user => res.json(user))
+            .then(user => res.status(200).json(user))
             .catch(next)
     }
 
@@ -51,7 +51,7 @@ class AuthController{
         if(!req.isAuthenticated())
             return next(this.boom.badRequest('Not authenticated'))
         req.logout()
-        res.json(req.user)
+        res.json({'message': 'Successfuly logged out.'}).status(200)
         res.end()
     }
 
@@ -64,7 +64,7 @@ class AuthController{
         this.service.deleteUser(req.user._id)
             .then(message => {
                 req.logout()
-                res.json(message)
+                res.json(message).status(200)
             })
             .catch(next)
     }

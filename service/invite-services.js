@@ -90,7 +90,7 @@ class InviteService {
     }
 
     deleteInvite(userID, inviteID){
-        this.inviteDB.findByID(inviteID)
+        return this.inviteDB.findByID(inviteID)
             .then(invite => {
                 if(invite._source.inviterID !== userID && invite._source.inviteeID !== userID)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions!'))
@@ -104,7 +104,7 @@ class InviteService {
 
     acceptInvite(userID, inviteID){
         let inviteeName
-        this.inviteDB.findByID(inviteID)
+        return this.inviteDB.findByID(inviteID)
             .then(invite => {
                 if(invite._source.inviteeID !== userID)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions!'))
@@ -119,13 +119,16 @@ class InviteService {
                 })
                 return this.groupDB.update(groupData._id, group)
             })
-            .then((resultUpdate) => {
+            .then(() => {
                 return this.deleteInvite(userID, inviteID)
+            })
+            .then(() => {
+                return {'message': 'Successfuly accepted invite.'}
             })
     }
 
     removeInvitee(userID, groupID, inviteeID){
-        this.groupDB.findByID(groupID)
+        return this.groupDB.findByID(groupID)
             .then(groupData => {
                 if(userID !== groupData._source.owner && userID !== inviteeID)
                     return Promise.reject(this.boom.badRequest('Insufficient permissions!'))
@@ -136,6 +139,9 @@ class InviteService {
 
                 groupData._source.invitees.splice(inviteeIdx, 1)
                 return this.groupDB.update(groupID, {'invitees': groupData._source.invitees})
+            })
+            .then(() => {
+                return {'message': 'Successfuly kicked invitee.'}
             })
     }
 }
