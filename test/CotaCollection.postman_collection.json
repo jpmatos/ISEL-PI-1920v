@@ -7,7 +7,127 @@
 	},
 	"item": [
 		{
-			"name": "users-pre",
+			"name": "clean-indexes",
+			"item": [
+				{
+					"name": "DeleteGroupsIndex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUsersIndex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteInvitesIndex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_invites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_invites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateGroupsIndex",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUsersIndex",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateInvitesIndex",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_invites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_invites"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "auth-pre",
 			"item": [
 				{
 					"name": "RegisterUser",
@@ -56,6 +176,52 @@
 					"response": []
 				},
 				{
+					"name": "RegisterInvitee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0dcd27fc-f739-4a98-a47d-8bdf4ce0c9e4",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"invitee\", `\\\"${jsonData.username}\\\"`)",
+									"",
+									"pm.test('Should register user.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.username).to.eql(req.username)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"matosInvitee\",\n\t\"password\": \"inviteepassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/register",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Login",
 					"event": [
 						{
@@ -63,8 +229,6 @@
 							"script": {
 								"id": "37aff6d7-9745-4554-bc3a-d00b3dce938b",
 								"exec": [
-									"const jsonData = JSON.parse(responseBody)",
-									"",
 									"pm.test('Should login.', function(){",
 									"    const res = pm.response.json()",
 									"    const req = JSON.parse(request.data)",
@@ -804,19 +968,147 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "users-post",
+			"name": "invites",
 			"item": [
 				{
-					"name": "Logout",
+					"name": "CreateGroup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1650e6c-3123-4586-b8e5-f767e977585c",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"groupID\", jsonData._id)",
+									"",
+									"pm.test('Should return inserted group.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.name).to.eql(req.name)",
+									"    pm.expect(res.description).to.eql(req.description)",
+									"    pm.expect(res).to.have.a.property('series')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Name\",\n\t\"description\": \"Description\"\n}"
+						},
+						"url": {
+							"raw": "{{BASE_API_URL}}/groups",
+							"host": [
+								"{{BASE_API_URL}}"
+							],
+							"path": [
+								"groups"
+							]
+						},
+						"description": "Creates a group"
+					},
+					"response": []
+				},
+				{
+					"name": "SendInvite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "de559604-a8b8-4219-825b-683cbcce3507",
+								"exec": [
+									"pm.test('Should invite user.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_INVITE_URL}}/group/{{groupID}}/user/{{invitee}}",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"group",
+								"{{groupID}}",
+								"user",
+								"{{invitee}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetInvites",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a0776f2-d807-410f-b36b-56288c7eb688",
+								"exec": [
+									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"inviteID\", jsonData.invites[0]._id)",
+									"postman.setEnvironmentVariable(\"inviteeID\", jsonData.invites[0]._source.inviteeID)",
+									"",
+									"pm.test(\"Should return all invites.\", function(){",
+									"    const res = pm.response.json()",
+									"    res.invites.forEach(function(invite){",
+									"      pm.expect(invite._source.inviterID).to.be.a('string')",
+									"      pm.expect(invite._source.inviter).to.be.a('string')",
+									"      pm.expect(invite._source.inviteeID).to.be.a('string')",
+									"      pm.expect(invite._source.invitee).to.be.a('string')",
+									"      pm.expect(invite._source.groupID).to.be.a('string')",
+									"      pm.expect(invite._source.group).to.be.a('string')",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_INVITE_URL}}/invites",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"invites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogoutUser",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "136aa1e6-215d-43ea-8e25-49228c4d4990",
 								"exec": [
-									"pm.test('Should logout.', function(){",
+									"pm.test('Should log out.', function(){",
 									"    const res = pm.response.json()",
-									"    pm.expect(res).to.eql(null)",
+									"    pm.expect(res.message).to.have.string('Successful')",
 									"});"
 								],
 								"type": "text/javascript"
@@ -839,15 +1131,121 @@
 					"response": []
 				},
 				{
-					"name": "Login",
+					"name": "LoginInvitee",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "37aff6d7-9745-4554-bc3a-d00b3dce938b",
 								"exec": [
-									"const jsonData = JSON.parse(responseBody)",
-									"",
+									"pm.test('Should login.', function(){",
+									"    const res = pm.response.json()",
+									"    const req = JSON.parse(request.data)",
+									"    pm.expect(res._id).to.be.a('string')",
+									"    pm.expect(res.username).to.eql(req.username)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": {{invitee}},\n\t\"password\": \"inviteepassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/login",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AcceptInvite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "80f9f6c3-4649-4d8e-a293-95bf7d2a5e12",
+								"exec": [
+									"pm.test('Should accept invite.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_INVITE_URL}}/accept/{{inviteID}}",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"accept",
+								"{{inviteID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogoutInvitee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "136aa1e6-215d-43ea-8e25-49228c4d4990",
+								"exec": [
+									"pm.test('Should log out.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/logout",
+							"host": [
+								"{{BASE_AUTH_URL}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LoginUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "37aff6d7-9745-4554-bc3a-d00b3dce938b",
+								"exec": [
 									"pm.test('Should login.', function(){",
 									"    const res = pm.response.json()",
 									"    const req = JSON.parse(request.data)",
@@ -884,16 +1282,127 @@
 					"response": []
 				},
 				{
-					"name": "DeleteUser",
+					"name": "KickInvitee",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "a1e66fc4-1b9f-4717-b50b-30532f6383b3",
+								"id": "2ba3cdd7-b1f7-4b61-8b1b-e1373c629e62",
+								"exec": [
+									"pm.test('Should kick invitee.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_INVITE_URL}}/group/{{groupID}}/kick/{{inviteeID}}",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"group",
+								"{{groupID}}",
+								"kick",
+								"{{inviteeID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SendInvite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "de559604-a8b8-4219-825b-683cbcce3507",
+								"exec": [
+									"pm.test('Should invite user.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_INVITE_URL}}/group/{{groupID}}/user/{{invitee}}",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"group",
+								"{{groupID}}",
+								"user",
+								"{{invitee}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetInvites",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a0776f2-d807-410f-b36b-56288c7eb688",
 								"exec": [
 									"const jsonData = JSON.parse(responseBody)",
+									"postman.setEnvironmentVariable(\"inviteID\", jsonData.invites[0]._id)",
+									"postman.setEnvironmentVariable(\"inviteeID\", jsonData.invites[0]._source.inviteeID)",
 									"",
-									"pm.test('Should delete user.', function(){",
+									"pm.test(\"Should return all invites.\", function(){",
+									"    const res = pm.response.json()",
+									"    res.invites.forEach(function(invite){",
+									"      pm.expect(invite._source.inviterID).to.be.a('string')",
+									"      pm.expect(invite._source.inviter).to.be.a('string')",
+									"      pm.expect(invite._source.inviteeID).to.be.a('string')",
+									"      pm.expect(invite._source.invitee).to.be.a('string')",
+									"      pm.expect(invite._source.groupID).to.be.a('string')",
+									"      pm.expect(invite._source.group).to.be.a('string')",
+									"    })",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_INVITE_URL}}/invites",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"invites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteInvite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fb27aa7f-d829-48b5-931a-be941e75073e",
+								"exec": [
+									"pm.test('Should delete invite.', function(){",
 									"    const res = pm.response.json()",
 									"    pm.expect(res.message).to.have.string('Successful')",
 									"});"
@@ -905,23 +1414,166 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{BASE_AUTH_URL}}/delete/{{userID}}",
+							"raw": "{{BASE_INVITE_URL}}/delete/{{inviteID}}",
+							"host": [
+								"{{BASE_INVITE_URL}}"
+							],
+							"path": [
+								"delete",
+								"{{inviteID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LogoutUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "136aa1e6-215d-43ea-8e25-49228c4d4990",
+								"exec": [
+									"pm.test('Should log out.', function(){",
+									"    const res = pm.response.json()",
+									"    pm.expect(res.message).to.have.string('Successful')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_AUTH_URL}}/logout",
 							"host": [
 								"{{BASE_AUTH_URL}}"
 							],
 							"path": [
-								"delete",
-								"{{userID}}"
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "clean-indexes",
+			"item": [
+				{
+					"name": "DeleteGroupsIndex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUsersIndex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteInvitesIndex",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_invites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_invites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateGroupsIndex",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_groups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUsersIndex",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateInvitesIndex",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/cota_invites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"cota_invites"
 							]
 						}
 					},
@@ -955,15 +1607,21 @@
 	],
 	"variable": [
 		{
-			"id": "47160969-9d95-47d9-8841-b677889a5372",
+			"id": "7a051693-43d2-4f5c-a8bf-a312247f0004",
 			"key": "BASE_API_URL",
 			"value": "http://localhost:8000/api",
 			"type": "string"
 		},
 		{
-			"id": "4bfe558a-28e4-41ef-982f-4d2093a960b2",
+			"id": "320374c9-9555-4ace-bc1a-047075e0f983",
 			"key": "BASE_AUTH_URL",
 			"value": "http://localhost:8000/auth",
+			"type": "string"
+		},
+		{
+			"id": "f5b1f80f-ba9c-4ccf-a12f-343217519d47",
+			"key": "BASE_INVITE_URL",
+			"value": "http://localhost:8000/invite",
 			"type": "string"
 		}
 	],
