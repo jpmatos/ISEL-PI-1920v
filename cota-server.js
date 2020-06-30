@@ -31,6 +31,9 @@ const isDevMode = process.env.DEV_MODE
 const express = require('express')
 const passport = require('passport')
 const nodefetch = require('node-fetch')
+const morgan = require('morgan')
+const bcrypt = require('bcrypt')
+const boom = require('boom')
 
 //Require webpack
 const expressSession = require('express-session')
@@ -38,8 +41,6 @@ const bodyParser = require('body-parser')
 const webpackConfig = require('./webpack.config.js')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
-const bcrypt = require('bcrypt')
-const boom = require('boom')
 
 //Require project files
 const cotaApi = require('./web-api/cota-web-api')
@@ -75,6 +76,7 @@ passport.deserializeUser((userId, done) => {
 const app = express()
 
 // Middleware
+app.use(morgan('dev', {'stream': {'write': console.debug}}))
 app.use(bodyParser.json())
 app.use(expressSession({
   secret: process.env.SESSION_SECRET,
